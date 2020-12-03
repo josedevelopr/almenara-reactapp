@@ -2,7 +2,7 @@ import { useEffect, useReducer } from "react";
 import { AuthContext } from "./auth/AuthContext";
 import { AppRouter } from "./routers/AppRouter";
 import { authReducer } from "./auth/authReducer";
-import "./App.css";
+import 'antd/dist/antd.css';
 
 const init = () => {
   return JSON.parse(localStorage.getItem("user")) || { logged: false };

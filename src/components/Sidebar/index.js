@@ -1,29 +1,29 @@
-import React, { useContext } from "react";
-import { NavLink, useHistory } from "react-router-dom";
-import { AuthContext } from "../../auth/AuthContext";
-import { types } from "../../types/types";
+import React from "react";
+import { NavLink } from "react-router-dom";
+import { BookOutlined, HomeOutlined } from "@ant-design/icons";
+
+import LogoHospital from "../../images/logo_hospital.svg";
+import "./Sidebar.css";
 
 export const Sidebar = () => {
-  const history = useHistory();
-  const { user, dispatch } = useContext(AuthContext);
-
-  const handleLogout = () => {
-    dispatch({
-      type: types.logout,
-    });
-    history.replace("/login");
-  };
-
   return (
-    <div>
-      <NavLink exact to="/inicio">
-        Inicio
-      </NavLink>
-      <NavLink exact to="/about">
-        About
-      </NavLink>
-      <button onClick={handleLogout}>Logout</button>
-      <p>{user.name}</p>
+    <div className="left">
+      <div className="logo">
+        <img src={LogoHospital} alt="Logo Harrison" />
+        <h2>Hospital Almenara</h2>
+      </div>
+      <ul>
+        <li>
+          <NavLink to="/inicio" activeClassName="active">
+            <HomeOutlined /> Inicio
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/about" activeClassName="active">
+            <BookOutlined /> About
+          </NavLink>
+        </li>
+      </ul>
     </div>
   );
 };

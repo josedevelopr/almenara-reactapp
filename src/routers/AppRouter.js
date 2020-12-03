@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { BrowserRouter, Switch } from "react-router-dom";
 import { AuthContext } from "../auth/AuthContext";
-import { Login } from "../page/Login";
+import { Login } from "../pages/Login";
 import { DashboardRoutes } from "./DashboardRoutes";
 import { PrivateRoute } from "./PrivateRoute";
 import { PublicRoute } from "./PublicRoute";
