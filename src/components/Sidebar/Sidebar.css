@@ -1,38 +1,53 @@
 .left {
-    width: 250px;
-    background: #0045c4;
-    background: #0073DE;
+  width: 250px;
+  background: #0045c4;
+  background: #0073de;
 }
 .left .logo {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 70px;
-    width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 70px;
+  width: 100%;
 }
 
 .left .logo img {
-    width: 30px;
+  width: 30px;
 }
 .left .logo h2 {
-    margin: 0 0 0 15px;
-    text-transform: uppercase;
-    font-size: 16px;
-    color: #ffffff;
-} 
-
-.left ul{
-    margin: 0;
+  margin: 0 0 0 15px;
+  text-transform: uppercase;
+  font-size: 16px;
+  color: #ffffff;
 }
-.left ul li a{
-    display: block;
-    padding: 15px 0 15px 30px;
-    font-size: 15px;
-    color: #eeeeee;
+
+.left ul {
+  margin: 0;
+}
+.left ul li .title {
+  display: flex;
+  align-items: center;
+  padding: 10px 0 10px 25px;
+  font-size: 13px;
+  color: #b4caf2;
+  font-weight: bold;
+  margin-top: 10px;
+}
+.left ul li .title span {
+  margin-right: 10px;
+}
+.left ul li a {
+  display: block;
+  padding: 6px 0 6px 45px;
+  font-size: 16px;
+  color: #eeeeee;
+}
+.left ul li a:hover{
+  background: #2785dd;
 }
 .left ul li a.active {
-    background: #004382;
+  background: #004382;
 }
 .left ul li a span {
-    margin-right: 10px;
+  margin-right: 10px;
 }

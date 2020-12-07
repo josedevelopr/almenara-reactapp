@@ -1,0 +1,12 @@
+header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+header .title{
+    margin: 0;
+}
+.content  .searchInput {
+    margin-bottom: 10px;
+}

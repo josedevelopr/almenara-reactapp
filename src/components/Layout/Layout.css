@@ -9,9 +9,9 @@
   height: 100vh;
 }
 .right .content-app {
+  overflow-y: auto;
   width: 100%;
   height: calc(100vh - 70px);
-  overflow-y: auto;
   padding-top: 50px;
   padding-bottom: 50px;
 }
