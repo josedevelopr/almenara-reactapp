@@ -181,13 +181,6 @@ export const MedicoReporte = () => {
         >
           <FilePdfTwoTone twoToneColor="red" /> Exportar a PDF
         </Button>
-        <a href="http://localhost:8080/doctors/pdf" rel="noreferrer" target="_blank">
-          <Button
-            className="d-flex justify-content-center align-items-center"
-            type="dashed"
-            icon={<FilePdfTwoTone twoToneColor="#ff0039" />}
-          />
-        </a>
       </header>
       <div className="content">
         <Table

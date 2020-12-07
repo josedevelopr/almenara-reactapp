@@ -39,7 +39,7 @@ export const Sidebar = () => {
           </span>
         </li>
         <li>
-          <NavLink to="/mantenimiento/universidad" activeClassName="active">
+          <NavLink to="/mantenimiento/universidad" activeClassName="active" className="done">
             • Universidad
           </NavLink>
         </li>
@@ -49,7 +49,7 @@ export const Sidebar = () => {
           </NavLink>
         </li>
         <li>
-          <NavLink to="/mantenimiento/medico" activeClassName="active">
+          <NavLink to="/mantenimiento/medico" activeClassName="active" className="done">
             • Médico
           </NavLink>
         </li>
@@ -64,7 +64,7 @@ export const Sidebar = () => {
           </span>
         </li>
         <li>
-          <NavLink to="/reporte/medico" activeClassName="active">
+          <NavLink to="/reporte/medico" activeClassName="active" className="done">
             • Médico
           </NavLink>
         </li>

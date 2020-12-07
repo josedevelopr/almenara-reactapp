@@ -51,3 +51,6 @@
 .left ul li a span {
   margin-right: 10px;
 }
+.done {
+  background: #000;
+}

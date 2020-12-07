@@ -8,6 +8,7 @@ import {
   Tag,
   Form,
   Radio,
+  notification,
 } from "antd";
 import { EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { createSchool, getSchools } from "../../../services/SchoolService";
@@ -15,6 +16,14 @@ import * as Yup from "yup";
 
 import "../Mantenimiento.css";
 import { useFormik } from "formik";
+
+const openNotification = (msg, description, placement) => {
+  notification.success({
+    message: msg,
+    description: description,
+    placement,
+  });
+};
 
 export const Universidad = () => {
   const [loading, setLoading] = useState(false);
@@ -53,7 +62,9 @@ export const Universidad = () => {
       console.log(value);
       createSchool(value).then((resp) => {
         console.log(resp);
-        listar()
+        listar();
+        setVisible(false);
+        openNotification("Guardado Correctamente", "", "topRight");
       });
       formik.resetForm();
     },
