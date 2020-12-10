@@ -74,7 +74,7 @@ export const Sidebar = () => {
           </NavLink>
         </li>
         <li>
-          <NavLink to="/reporte/servicio" activeClassName="active">
+          <NavLink to="/reporte/servicio" activeClassName="active" className="done">
             • Servicio
           </NavLink>
         </li>
