@@ -71,6 +71,7 @@ export const Grupo = () => {
   };
 
   useEffect(() => {
+    setIdTeam(null);
     getDoctorsByTeam(1).then(setTeam1);
     getDoctorsByTeam(2).then(setTeam2);
     getDoctorsByTeam(3).then(setTeam3);

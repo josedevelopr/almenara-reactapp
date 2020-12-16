@@ -26,6 +26,8 @@ import * as Yup from "yup";
 import moment from "moment";
 
 import "../Mantenimiento.css";
+import { getNiveles } from "../../../services/NivelService";
+import { getTeams } from "../../../services/TeamService";
 
 const openNotification = (msg, description, placement) => {
   notification.success({
@@ -45,6 +47,8 @@ export const Medico = () => {
   const [specialties, setSpecialties] = useState([]);
   const [plazas, setPlazas] = useState([]);
   const [campus, setCampus] = useState([]);
+  const [teams, setTeams] = useState([]);
+  const [niveles, setNiveles] = useState([]);
 
   const listar = () => {
     getDoctors().then((resp) => {
@@ -55,6 +59,8 @@ export const Medico = () => {
         data.plazaName = data.plaza.name;
         data.campusName = data.campus.name;
         data.lastName = data.paternalSurname + " " + data.maternalSurname;
+        data.teamName = "Grupo " + data.team.name;
+        data.nivelName = data.nivel.name;
       });
       setDataSource(resp);
       console.log(resp);
@@ -88,11 +94,11 @@ export const Medico = () => {
     plaza: Yup.object().shape({
       id: Yup.number().nullable().required("Plaza requerida."),
     }),
-    // birthDate: Yup.string()
-    //   .nullable()
-    //   .required("Fecha de Nacimiento requerida"),
     campus: Yup.object().shape({
       id: Yup.number().nullable().required("Sede requerida."),
+    }),
+    team: Yup.object().shape({
+      id: Yup.number().nullable().required("Grupo requerido."),
     }),
     address: Yup.string()
       .trim()
@@ -133,6 +139,12 @@ export const Medico = () => {
       campus: {
         id: null,
       },
+      team: {
+        id: null,
+      },
+      nivel: {
+        id: 1,
+      },
       birthDate: null,
       address: "",
       cmp: "",
@@ -149,7 +161,7 @@ export const Medico = () => {
         setVisible(false);
         openNotification("Guardado Correctamente", "", "topRight");
       });
-      formik.resetForm();
+      // formik.resetForm();
     },
   });
 
@@ -199,6 +211,20 @@ export const Medico = () => {
       dataIndex: "plazaName",
       key: "plazaName",
       width: 80,
+      align: "center",
+    },
+    {
+      title: "Grupo",
+      dataIndex: "teamName",
+      key: "teamName",
+      width: 80,
+      align: "center",
+    },
+    {
+      title: "Nivel",
+      dataIndex: "nivelName",
+      key: "nivelName",
+      width: 70,
       align: "center",
     },
     {
@@ -310,6 +336,8 @@ export const Medico = () => {
     getSpecialties().then(setSpecialties);
     getPlazas().then(setPlazas);
     getCampus().then(setCampus);
+    getNiveles().then(setNiveles);
+    getTeams().then(setTeams);
   }, []);
 
   return (
@@ -518,6 +546,62 @@ export const Medico = () => {
                 </Form.Item>
               </Col>
             </Row>
+
+            <Row gutter={12}>
+              <Col span={12}>
+                <Form.Item label="Grupo:" required>
+                  <Select
+                    showSearch
+                    name="grupo.id"
+                    placeholder="Seleccione un grupo"
+                    optionFilterProp="children"
+                    style={{ width: "100%" }}
+                    value={formik.values.team.id}
+                    onChange={(text) => formik.setFieldValue("team.id", text)}
+                    filterOption={(input, option) =>
+                      option.props.children
+                        .toLowerCase()
+                        .indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    {teams.map((data) => (
+                      <Select.Option key={data.id} value={data.id}>
+                        {data.name}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                  {formik.errors.team && formik.touched.team ? (
+                    <div className="error-field">{formik.errors.team.id}</div>
+                  ) : null}
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="Nivel:">
+                  <Select
+                    disabled
+                    showSearch
+                    name="campus.id"
+                    placeholder="Seleccione un nivel"
+                    optionFilterProp="children"
+                    style={{ width: "100%" }}
+                    value={formik.values.nivel.id}
+                    onChange={(text) => formik.setFieldValue("nivel.id", text)}
+                    filterOption={(input, option) =>
+                      option.props.children
+                        .toLowerCase()
+                        .indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    {niveles.map((data) => (
+                      <Select.Option key={data.id} value={data.id}>
+                        {data.name}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+
             <Row gutter={12}>
               <Col span={12}>
                 <Form.Item label="Fecha de Nacimiento:">
