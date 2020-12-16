@@ -42,6 +42,16 @@ body {
 
 
 /* TABLE CSS BOOTSTRAP */
+.table thead,
+.table tbody,
+.table tfoot,
+.table tr,
+.table td,
+.table th {
+  border-color: inherit;
+  border-style: solid;
+  border-width: .05;
+}
 
 .table {
   --bs-table-bg: transparent;

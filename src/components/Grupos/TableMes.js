@@ -9,7 +9,7 @@ let diasSemana = [
   "Miércoles",
   "Jueves",
   "Viernes",
-  "Sábado",
+  "Sabado",
 ];
 
 export const TableMes = ({ mesName, mesNum, year }) => {
@@ -27,20 +27,20 @@ export const TableMes = ({ mesName, mesNum, year }) => {
     <div>
       <Divider orientation="left">
         <h3>
-          <b>{mesName} - {year}</b>
+          <b>
+            {mesName} - {year}
+          </b>
         </h3>
       </Divider>
       <div className="table-responsive">
-        <table
-          className="table table-striped"
-          border="1"
-          style={{ textAlign: "center" }}
-        >
+        <table className="table table-hover" style={{ textAlign: "center" }}>
           <thead>
             <tr>
               <th rowSpan="2">{mesName}</th>
               {daysName.map((data) => (
-                <th>{String(data).substr(0, 1)}</th>
+                data === "Domingo" || data === "Sabado" ?
+                <th style={{color: "red"}}>{String(data).substr(0, 1)}</th> :
+                <th>{String(data).substr(0, 1)}</th> 
               ))}
             </tr>
             <tr>
@@ -52,15 +52,23 @@ export const TableMes = ({ mesName, mesNum, year }) => {
           <tbody>
             <tr>
               <td>GUARDIA DIURNA</td>
-              {days.map(() => (
-                <SelectTd />
-              ))}
+              {daysName.map((data) =>
+                data === "Domingo" || data === "Sabado" ? (
+                  <SelectTd isBgGray={true} />
+                ) : (
+                  <SelectTd isBgGray={false} />
+                )
+              )}
             </tr>
             <tr>
               <td>GUARDIA NOCTURNA</td>
-              {days.map(() => (
-                <SelectTd />
-              ))}
+              {daysName.map((data) =>
+                data === "Domingo" || data === "Sabado" ? (
+                  <SelectTd isBgGray={true} />
+                ) : (
+                  <SelectTd isBgGray={false} />
+                )
+              )}
             </tr>
           </tbody>
         </table>

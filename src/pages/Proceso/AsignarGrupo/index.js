@@ -15,7 +15,7 @@ export const AsignaGrupo = () => {
           </Breadcrumb>
         </h2>
       </header>
-      <div className="content">
+      <div className="content" style={{paddingBottom: '50px'}}>
         <TableMesList />
       </div>
     </div>
