@@ -1,6 +1,5 @@
 import { Breadcrumb } from "antd";
 import React from "react";
-import { TableMes } from "../../../components/Grupos/TableMes";
 import { TableMesList } from "../../../components/Grupos/TableMesList";
 
 import "../../Mantenimiento/Mantenimiento.css";
@@ -17,7 +16,7 @@ export const AsignaGrupo = () => {
         </h2>
       </header>
       <div className="content">
-        <TableMesList/>
+        <TableMesList />
       </div>
     </div>
   );
