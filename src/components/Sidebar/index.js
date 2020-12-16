@@ -2,7 +2,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import { FileTextFilled, ToolFilled, DashboardFilled } from "@ant-design/icons";
 
-import LogoHospital from "../../images/logo_hospital.svg";
+import LogoHospital from "../../images/logo_essalud.jpg";
 import "./Sidebar.css";
 
 export const Sidebar = () => {
@@ -56,6 +56,11 @@ export const Sidebar = () => {
         <li>
           <NavLink to="/mantenimiento/servicio" activeClassName="active">
             • Servicio
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/mantenimiento/grupo" activeClassName="active" className="done">
+            • Grupos
           </NavLink>
         </li>
         <li>

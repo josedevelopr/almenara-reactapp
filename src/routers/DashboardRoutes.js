@@ -12,6 +12,7 @@ import { Servicio } from "../pages/Mantenimiento/Servicio";
 import { MedicoReporte } from "../pages/Reporte/Medico";
 import { EspecialidadReporte } from "../pages/Reporte/Especialidad";
 import { ServicioRerporte } from "../pages/Reporte/Servicio";
+import { Grupo } from "../pages/Mantenimiento/Grupo";
 
 export const DashboardRoutes = () => {
   return (
@@ -25,6 +26,7 @@ export const DashboardRoutes = () => {
           <Route exact path="/mantenimiento/especialidad" component={Especialidad} />
           <Route exact path="/mantenimiento/medico" component={Medico} />
           <Route exact path="/mantenimiento/servicio" component={Servicio} />
+          <Route exact path="/mantenimiento/grupo" component={Grupo} />
           <Route exact path="/reporte/medico" component={MedicoReporte} />
           <Route exact path="/reporte/especialidad" component={EspecialidadReporte} />
           <Route exact path="/reporte/servicio" component={ServicioRerporte} />

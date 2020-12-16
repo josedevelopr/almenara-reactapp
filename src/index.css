@@ -238,3 +238,8 @@ body {
     -webkit-overflow-scrolling: touch;
   }
 }
+
+
+.logo-login{
+  width: 100px;
+}

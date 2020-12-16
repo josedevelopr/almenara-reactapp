@@ -9,7 +9,7 @@ import {
 } from "@ant-design/icons";
 import * as Yup from "yup";
 
-import LogoHospital from "../../images/logo_hospital.svg";
+import LogoHospital from "../../images/logo_essalud.jpg";
 import "./Login.css";
 import { useFormik } from "formik";
 import { login } from "../../services/UserService";
@@ -70,7 +70,7 @@ export const Login = ({ history }) => {
   return (
     <div className="Login">
       <div className="form-content">
-        <img src={LogoHospital} alt="Logo Hospital Almenara" />
+        <img className="logo logo-login" src={LogoHospital} alt="Logo Hospital Almenara" />
         <h1>Iniciar Sesión</h1>
         <p>Bienvenido, inicie sesión para ingresar al sistema.</p>
         <Form layout="vertical" onSubmitCapture={formik.handleSubmit}>
