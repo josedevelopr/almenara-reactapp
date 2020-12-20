@@ -10,4 +10,10 @@ const createSchool = async (data) => {
   return resp.data;
 }
 
-export { getSchools, createSchool };
+
+const actualizarSchool = async (data) => {
+  const resp = await clienteAxios.post(`/schools/update/${data.id}`,data);
+  return resp.data;
+}
+
+export { getSchools, createSchool, actualizarSchool };

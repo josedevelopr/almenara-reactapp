@@ -11,7 +11,7 @@ import {
   notification,
 } from "antd";
 import { EditOutlined, PlusOutlined } from "@ant-design/icons";
-import { createSchool, getSchools } from "../../../services/SchoolService";
+import { createSchool, getSchools, actualizarSchool } from "../../../services/SchoolService";
 import * as Yup from "yup";
 
 import "../Mantenimiento.css";
@@ -28,7 +28,8 @@ const openNotification = (msg, description, placement) => {
 export const Universidad = () => {
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
-  const [filterTable, setFilterTable] = useState(null);
+  const [editar, setEditar] = useState(false);
+  const [filterTable, setFilterTable] = useState(null);  
   const [dataSource, setDataSource] = useState([]);
 
   const listar = () => {
@@ -60,15 +61,29 @@ export const Universidad = () => {
     validationSchema,
     onSubmit: (value) => {
       console.log(value);
-      createSchool(value).then((resp) => {
-        console.log(resp);
-        listar();
-        setVisible(false);
-        openNotification("Guardado Correctamente", "", "topRight");
-      });
+      if(editar){
+        createSchool(value).then((resp) => {
+          console.log(resp);
+          listar();
+          setVisible(false);
+          openNotification("Actualizado Correctamente", "", "topRight");
+        });
+      }else{
+        createSchool(value).then((resp) => {
+          console.log(resp);
+          listar();
+          setVisible(false);
+          openNotification("Guardado Correctamente", "", "topRight");
+        });
+      }
+
+     
+      
       formik.resetForm();
     },
   });
+
+
 
   const columns = [
     {
@@ -127,9 +142,22 @@ export const Universidad = () => {
       width: 100,
       align: "center",
       render: (record) => (
-        <Button type="link" size="small">
-          <EditOutlined />
-        </Button>
+        // <Button type="link" size="small">
+        //   <EditOutlined />
+        // </Button>
+         <Button type="primary" size="large" onClick={() => 
+          {             
+            formik.values.name = record.name;
+            formik.values.shortName = record.shortName;
+            formik.values.status = record.status;
+            formik.values.id = record.id;
+            setEditar(true);
+            setVisible(true);          
+          }
+         
+         }>
+        <EditOutlined />
+       </Button>
       ),
     },
   ];
@@ -163,7 +191,16 @@ export const Universidad = () => {
             <Breadcrumb.Item>Universidad</Breadcrumb.Item>
           </Breadcrumb>
         </h2>
-        <Button type="primary" size="large" onClick={() => setVisible(true)}>
+        <Button type="primary" size="large" onClick={() =>           
+          {
+            formik.values.name = null;
+            formik.values.shortName = null;
+            formik.values.true = null;
+            formik.values.id = null;
+            setEditar(false);
+            setVisible(true)
+          }
+          }>
           <PlusOutlined /> Agregar
         </Button>
       </header>
@@ -223,9 +260,14 @@ export const Universidad = () => {
                 <Radio.Button value={false}>INACTIVO</Radio.Button>
               </Radio.Group>
             </Form.Item>
-            <Button type="primary" htmlType="submit" block>
-              Registrar
-            </Button>
+
+              {
+                editar? (
+                <Button type="primary" htmlType="submit" block> Actualizar</Button>
+                ) : <Button type="primary" htmlType="submit" block> Registrar</Button>
+              }
+
+            
           </Form>
         </Drawer>
       </div>
