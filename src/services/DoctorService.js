@@ -15,6 +15,11 @@ const createDoctor = async (data) => {
   return resp.data;
 };
 
+const updateDoctor = async (data) => {
+  const resp = await clienteAxios.put(`/doctors/${data.id}`, data);
+  return resp.data;
+};
+
 const viewPdfDoctor = async () => {
   await clienteAxios
     .get("/doctors/pdf", { responseType: "blob" })
@@ -25,4 +30,4 @@ const viewPdfDoctor = async () => {
     });
 };
 
-export { getDoctors, createDoctor, viewPdfDoctor, getDoctorsByTeam };
+export { updateDoctor, getDoctors, createDoctor, viewPdfDoctor, getDoctorsByTeam };

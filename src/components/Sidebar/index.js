@@ -35,7 +35,7 @@ export const Sidebar = () => {
         </li>
         <li>
           <NavLink to="/proceso/asignar-grupo" activeClassName="active" className="done">
-            • Asignar Grupo
+            • Grupo de guardia en emergencia
           </NavLink>
         </li>
         <li>
