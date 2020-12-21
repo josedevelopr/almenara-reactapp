@@ -15,6 +15,11 @@ const createDoctor = async (data) => {
   return resp.data;
 };
 
+const updateDoctor = async (data) => {
+  const resp = await clienteAxios.put(`/doctors/${data.id}`, data);
+  return resp.data;
+};
+
 const viewPdfDoctor = async () => {
   await clienteAxios
     .get("/doctors/pdf", { responseType: "blob" })
@@ -51,13 +56,12 @@ const getFindAllByTeamIdGrupo = async (teamId, categoria) => {
   return resp.data;
 };
 
+
 const findAllTipos = async () => {
   const resp = await clienteAxios.get(`/doctors/findAllTipos`);
   return resp.data;
 };
 
 
-
-
 export { getDoctors, createDoctor, viewPdfDoctor, getDoctorsByTeam, getDoctorsByTeamTipo, getTeamIdCategoriaTodos, 
-  getFindAllByTeamIdGrupo,findAllTipos, createDoctorGrupo, borrarDoctorGrupo };
+  getFindAllByTeamIdGrupo,findAllTipos, createDoctorGrupo, borrarDoctorGrupo, updateDoctor };
