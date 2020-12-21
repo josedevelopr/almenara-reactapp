@@ -78,7 +78,7 @@ export const Login = ({ history }) => {
             <Input
               prefix={<UserOutlined />}
               size="large"
-              placeholder="Ingrese su usuario"
+              placeholder="Ingrese usuario"
               name="username"
               value={formik.values.username}
               onChange={formik.handleChange}
