@@ -7,11 +7,13 @@ export const authReducer = (state = {}, action) => {
       return {
         ...action.payload,
         logged: true,
+        roles : action.payload.roles
       };
     case types.logout:
       localStorage.removeItem("token");
       return {
         logged: false,
+        roles : []
       };
     default:
       return state;

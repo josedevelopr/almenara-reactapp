@@ -37,12 +37,21 @@ const openNotification = (msg, description, placement) => {
   });
 };
 
+const openErrorNotification = (msg, description, placement) => {
+  notification.error({
+    message: msg,
+    description: description,
+    placement,
+  });
+};
+
 export const Medico = () => {
   const [loading, setLoading] = useState(false);
   const [visibleNewForm, setVisibleNewForm] = useState(false);
   const [visibleUpdateForm, setVisibleUpdateForm] = useState(false);
   const [filterTable, setFilterTable] = useState(null);
   const [dataSource, setDataSource] = useState([]);
+  const [editar, setEditar] = useState(false);
 
   const [schoolsAgreements, setSchoolsAgreements] = useState([]);
   const [specialties, setSpecialties] = useState([]);
@@ -163,15 +172,21 @@ export const Medico = () => {
     onSubmit: (value) => {      
       console.log(value);
       
-      if(value.action=="new")
+      if(value.action=="new" || editar == false)
       { createDoctor(value).then((resp) => {
           // console.log(resp);
           listar();
           setVisibleNewForm(false);
           openNotification("Guardado Correctamente", "", "topRight");
           formik.resetForm();
-        });      
-      } else if(value.action=="update")
+        }).catch(function (error) {
+          if (error.response) 
+          {
+            openErrorNotification(error.response.data.message, "", "topRight");            
+          }
+        });   
+      } 
+      else if(value.action=="update" || editar == true)
       { delete value.action;
         // console.log(value);
         updateDoctor(value).then((resp) => {
@@ -180,7 +195,12 @@ export const Medico = () => {
           setVisibleUpdateForm(false);
           openNotification("Actualizado Correctamente", "", "topRight");
           formik.resetForm();
-        });   
+        }).catch(function (error) {
+          if (error.response) 
+          {
+            openErrorNotification(error.response.data.message, "", "topRight");            
+          }
+        });
       }      
     },
   });
@@ -377,7 +397,33 @@ export const Medico = () => {
     formik.initialValues.phone = doctor.phone;
     formik.initialValues.status = doctor.status;
 
-    console.log(moment(doctor.birthDate).format("DD/MM/YYYY"));
+    setEditar(true);
+    //console.log(moment(doctor.birthDate).format("DD/MM/YYYY"));
+  }
+
+  function cleanDataDoctorToForm()
+  { formik.initialValues.action = 'new';
+    formik.initialValues.id = null;
+    formik.initialValues.document = '';
+    formik.initialValues.paternalSurname = '';
+    formik.initialValues.maternalSurname = '';
+    formik.initialValues.name = '';
+    formik.initialValues.schoolAgreement.id = null;
+    formik.initialValues.specialty.id = null;
+    formik.initialValues.plaza.id = null;
+    formik.initialValues.campus.id = null;
+    formik.initialValues.plazaName = '';
+    
+    formik.initialValues.nivel.id = 1;
+    formik.initialValues.birthDate = moment();
+    formik.initialValues.address = '';
+    formik.initialValues.cmp = '';
+    formik.initialValues.email = '';
+    formik.initialValues.phone = '';
+    formik.initialValues.status = true;
+
+    setEditar(false);
+    //console.log(moment(doctor.birthDate).format("DD/MM/YYYY"));
   }
 
   function disabledDate(current) {
@@ -404,7 +450,7 @@ export const Medico = () => {
             <Breadcrumb.Item>Médico</Breadcrumb.Item>
           </Breadcrumb>
         </h2>
-        <Button type="primary" size="large" onClick={() => {setVisibleNewForm(true);}}>
+        <Button type="primary" size="large" onClick={() => { cleanDataDoctorToForm({}); setVisibleNewForm(true);}}>
           <PlusOutlined /> Agregar
         </Button>
       </header>

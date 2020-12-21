@@ -139,18 +139,18 @@ export const MedicoReporte = () => {
         return status.indexOf(value) === 0;
       },
     },
-    {
-      title: "Acciones",
-      key: "action",
-      fixed: "right",
-      width: 100,
-      align: "center",
-      render: (record) => (
-        <Button type="link" size="small">
-          <EditOutlined />
-        </Button>
-      ),
-    },
+    // {
+    //   title: "Acciones",
+    //   key: "action",
+    //   fixed: "right",
+    //   width: 100,
+    //   align: "center",
+    //   render: (record) => (
+    //     <Button type="link" size="small">
+    //       <EditOutlined />
+    //     </Button>
+    //   ),
+    // },
   ];
 
   const exportToPdf = () => {
