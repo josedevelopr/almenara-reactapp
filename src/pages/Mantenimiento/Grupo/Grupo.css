@@ -1,3 +1,13 @@
 .table-group .table{
     width: 150px;
 }
+
+.ant-modal-wrap {
+    z-index: 100;
+}
+
+.ant-modal-mask {
+
+    z-index: 100;
+
+}

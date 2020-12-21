@@ -30,4 +30,38 @@ const viewPdfDoctor = async () => {
     });
 };
 
-export { updateDoctor, getDoctors, createDoctor, viewPdfDoctor, getDoctorsByTeam };
+const createDoctorGrupo = async (teamId, nombre, team) => {
+  const resp = await clienteAxios.put(`/doctors/updateGrup/${teamId}/${nombre}/${team}`);
+  return resp.data;
+};
+
+const borrarDoctorGrupo = async (teamId) => {
+  const resp = await clienteAxios.put(`/doctors/borrarDoctorGrupo/${teamId}`);
+  return resp.data;
+};
+
+const getDoctorsByTeamTipo = async (teamId, categoria) => {
+  const resp = await clienteAxios.get(`/doctors/teamIdCategoria/${teamId}/${categoria}`);
+  return resp.data;
+};
+
+
+const getTeamIdCategoriaTodos = async () => {
+  const resp = await clienteAxios.get(`/doctors/teamIdCategoriaTodos`);
+  return resp.data;
+};
+
+const getFindAllByTeamIdGrupo = async (teamId, categoria) => {
+  const resp = await clienteAxios.get(`/doctors/findAllByTeamIdGrupo/${teamId}/${categoria}`);
+  return resp.data;
+};
+
+
+const findAllTipos = async () => {
+  const resp = await clienteAxios.get(`/doctors/findAllTipos`);
+  return resp.data;
+};
+
+
+export { getDoctors, createDoctor, viewPdfDoctor, getDoctorsByTeam, getDoctorsByTeamTipo, getTeamIdCategoriaTodos, 
+  getFindAllByTeamIdGrupo,findAllTipos, createDoctorGrupo, borrarDoctorGrupo, updateDoctor };
