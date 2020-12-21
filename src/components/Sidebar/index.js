@@ -37,7 +37,7 @@ export const Sidebar = () => {
               </NavLink>
             </li>
             <li>
-              <NavLink to="/proceso/asignar-grupo" activeClassName="active" className="done">
+              <NavLink to="/proceso/asignar-grupo" activeClassName="active">
                 • Grupo de guardia en emergencia
               </NavLink>
             </li>
@@ -47,7 +47,7 @@ export const Sidebar = () => {
               </span>
             </li>
             <li>
-              <NavLink to="/mantenimiento/universidad" activeClassName="active" className="done">
+              <NavLink to="/mantenimiento/universidad" activeClassName="active" >
                 • Universidad
               </NavLink>
             </li>
@@ -57,7 +57,7 @@ export const Sidebar = () => {
               </NavLink>
             </li>
             <li>
-              <NavLink to="/mantenimiento/medico" activeClassName="active" className="done">
+              <NavLink to="/mantenimiento/medico" activeClassName="active">
                 • Médico
               </NavLink>
             </li>
@@ -67,7 +67,7 @@ export const Sidebar = () => {
               </NavLink>
             </li>
             <li>
-              <NavLink to="/mantenimiento/grupo" activeClassName="active" className="done">
+              <NavLink to="/mantenimiento/grupo" activeClassName="active">
                 • Grupos
               </NavLink>
             </li>
@@ -98,17 +98,17 @@ export const Sidebar = () => {
           </span>
         </li>
         <li>
-          <NavLink to="/reporte/medico" activeClassName="active" className="done">
+          <NavLink to="/reporte/medico" activeClassName="active">
             • Médico
           </NavLink>
         </li>
         <li>
-          <NavLink to="/reporte/especialidad" activeClassName="active" className="done">
+          <NavLink to="/reporte/especialidad" activeClassName="active">
             • Especialidad
           </NavLink>
         </li>
         <li>
-          <NavLink to="/reporte/servicio" activeClassName="active" className="done">
+          <NavLink to="/reporte/servicio" activeClassName="active">
             • Servicio
           </NavLink>
         </li>

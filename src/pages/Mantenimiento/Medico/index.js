@@ -13,10 +13,11 @@ import {
   Row,
   Col,
   notification,
+  Tooltip,
 } from "antd";
-import { EditOutlined, PlusOutlined } from "@ant-design/icons";
+import { EditOutlined, PlusOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import { useFormik } from "formik";
-import { updateDoctor, createDoctor, getDoctors } from "../../../services/DoctorService";
+import { updateDoctor, createDoctor, getDoctors, upgradeDoctorLevel } from "../../../services/DoctorService";
 import { getSchoolsAgreements } from "../../../services/SchoolAgreementService";
 import { getSpecialties } from "../../../services/SpecialtyService";
 import { getPlazas } from "../../../services/PlazaService";
@@ -159,6 +160,7 @@ export const Medico = () => {
         id: 1,
       },
       birthDate: null,
+      registeredAt: null,
       address: "",
       cmp: "",
       email: "",
@@ -204,6 +206,12 @@ export const Medico = () => {
       }      
     },
   });
+
+  
+  function upgradeDoctors(){
+    upgradeDoctorLevel().then( (resp) => {console.log(resp); listar();} )
+                        .catch((error) => { openErrorNotification("Error al actualizar el nivel de los médicos.", "", "topRight"); });
+  }
 
   const columns = [
     {
@@ -391,6 +399,7 @@ export const Medico = () => {
     
     formik.initialValues.nivel.id = doctor.nivel.id;
     formik.initialValues.birthDate = moment(doctor.birthDate, dateFormatList);
+    formik.initialValues.registeredAt = moment(doctor.registeredAt, dateFormatList);
     formik.initialValues.address = doctor.address;
     formik.initialValues.cmp = doctor.cmp;
     formik.initialValues.email = doctor.email;
@@ -416,6 +425,7 @@ export const Medico = () => {
     
     formik.initialValues.nivel.id = 1;
     formik.initialValues.birthDate = moment();
+    formik.initialValues.registeredAt = moment();
     formik.initialValues.address = '';
     formik.initialValues.cmp = '';
     formik.initialValues.email = '';
@@ -450,9 +460,14 @@ export const Medico = () => {
             <Breadcrumb.Item>Médico</Breadcrumb.Item>
           </Breadcrumb>
         </h2>
-        <Button type="primary" size="large" onClick={() => { cleanDataDoctorToForm({}); setVisibleNewForm(true);}}>
-          <PlusOutlined /> Agregar
-        </Button>
+        <div>
+          <Button type="primary" size="large" onClick={() => { cleanDataDoctorToForm({}); setVisibleNewForm(true);}} style={{marginRight:'10px'}}>
+            <PlusOutlined /> Agregar
+          </Button>          
+          <Tooltip title="Actualizar nivel de Médicos">
+            <Button type="primary" size="large" icon={<ClockCircleOutlined />} onClick={() => { upgradeDoctors() }}/>
+          </Tooltip>
+        </div>        
       </header>
       <div className="content">
         <Input.Search
@@ -713,8 +728,22 @@ export const Medico = () => {
                   </Select>
                 </Form.Item>
               {/* </Col>
-            </Row> */}
-
+            </Row> */}                     
+            <Form.Item label="Fecha de Ingreso:">
+              <DatePicker
+                style={{ width: "100%" }}
+                name="birthDate"
+                value={formik.values.registeredAt}
+                onChange={(value) =>
+                  formik.setFieldValue("registeredAt", value)
+                }
+                disabledDate={disabledDate}
+                format={dateFormatList}
+              />
+              {formik.errors.registeredAt && formik.touched.registeredAt ? (
+                <div className="error-field">{formik.errors.registeredAt}</div>
+              ) : null}
+            </Form.Item>                          
             <Row gutter={12}>
               <Col span={12}>
                 <Form.Item label="Fecha de Nacimiento:">
@@ -1057,8 +1086,22 @@ export const Medico = () => {
                   </Select>
                 </Form.Item>
               {/* </Col>
-            </Row> */}
-
+            </Row> */}            
+            <Form.Item label="Fecha de Ingreso:">
+              <DatePicker
+                style={{ width: "100%" }}
+                name="birthDate"
+                value={formik.values.registeredAt}
+                onChange={(value) =>
+                  formik.setFieldValue("registeredAt", value)
+                }
+                disabledDate={disabledDate}
+                format={dateFormatList}
+              />
+              {formik.errors.registeredAt && formik.touched.registeredAt ? (
+                <div className="error-field">{formik.errors.registeredAt}</div>
+              ) : null}
+            </Form.Item>              
             <Row gutter={12}>
               <Col span={12}>
                 <Form.Item label="Fecha de Nacimiento:">
