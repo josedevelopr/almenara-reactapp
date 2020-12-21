@@ -1,88 +1,270 @@
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Modal, Form, Select } from "antd";
-import { getDoctorsByTeam } from "../../../services/DoctorService";
-
+import { } from "antd";
+import {
+  Breadcrumb, Modal, Select ,
+  Button,
+  Drawer,
+  Input,
+  Table,
+  Tag,
+  Form,
+  Radio,
+  notification,
+  AutoComplete,
+} from "antd";
+import { EditOutlined, PlusOutlined } from "@ant-design/icons";
+import { getDoctors, getDoctorsByTeam, getDoctorsByTeamTipo, getTeamIdCategoriaTodos, getFindAllByTeamIdGrupo, findAllTipos, 
+  createDoctor, createDoctorGrupo, borrarDoctorGrupo } from "../../../services/DoctorService";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import "./Grupo.css";
 
 export const Grupo = () => {
   const [team1, setTeam1] = useState([]);
-  const [team2, setTeam2] = useState([]);
-  const [team3, setTeam3] = useState([]);
-  const [team4, setTeam4] = useState([]);
-  const [team5, setTeam5] = useState([]);
-  const [team6, setTeam6] = useState([]);
-  const [team7, setTeam7] = useState([]);
-  const [team8, setTeam8] = useState([]);
-  const [team9, setTeam9] = useState([]);
-  const [team10, setTeam10] = useState([]);
-
+  const [categoriaslst, setCategoriaslst] = useState([]);
+  const [doctoreslst, setDoctoreslst] = useState([]);  
+  const [editar, setEditar] = useState(false);  
+  const [visible, setVisible] = useState(false);
+  const [categoriaId, setCategoria] = useState(null);  
+  const [placeCategoria, setPlaceCategoria] = useState('Seleccione una Categoría');
+  const [placeNombre, setPlaceNombre] = useState('Seleccione un Médico');
+  const [placeGrupo, setPlaceGrupo] = useState('Seleccione un Grupo');
   const [idTeam, setIdTeam] = useState(null);
+  var grupoDoctores = [];
 
-  const searchTeamId = (id) => {
-    switch (id) {
-      case 1:
-        return team1;
-      case 2:
-        return team2;
-      case 3:
-        return team3;
-      case 4:
-        return team4;
-      case 5:
-        return team5;
-      case 6:
-        return team6;
-      case 7:
-        return team7;
-      case 8:
-        return team8;
-      case 9:
-        return team9;
-      case 10:
-        return team10;
-      default:
-        return null;
-    }
-  };
-
+ 
   const hanldeSelectTeam = (e) => {
-    Modal.info({
-      title: "Grupo " + e,
-      content: (
-        <table className="table table-striped table-hover">
-          <thead>
-            <tr>
-              <th>Doctor</th>
-              <th>Especialidad</th>
-            </tr>
-          </thead>
-          <tbody>
-            {searchTeamId(e).map((data) => (
-              <tr>
-                <td>◘ {data.paternalSurname} {data.maternalSurname}, {data.name}</td>
-                <td>{data.specialty.name}</td>
-              </tr>
+    // setGrupoDoctores([]);
+    getFindAllByTeamIdGrupo(e, categoriaId).then( x =>
+      {
+        console.log(x);        
+        grupoDoctores = x;
+
+        Modal.info({
+          title: "Grupo",
+          content: (
+            <div>
+            {grupoDoctores.map((data) => (              
+            <table className="table table-striped table-hover">
+              <thead>
+                <tr>               
+                  <th>Doctor</th>
+                  <th>Especialidad</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                      {data.doctores.map((data2) => (
+                        <tr>
+
+                        {
+                          data2.nivel.id == 1? (
+                            <td style={{textAlign: 'left', backgroundColor:'#CAFFB3'}}>- {data2.paternalSurname} {data2.maternalSurname}, {data2.name}</td>
+                          ): data2.nivel.id == 2? (
+                            <td style={{textAlign: 'left', backgroundColor:'#FFFFB3'}}>- {data2.paternalSurname} {data2.maternalSurname}, {data2.name}</td>
+                          ):(
+                            <td style={{textAlign: 'left', backgroundColor:'#FFBBB3'}}>- {data2.paternalSurname} {data2.maternalSurname}, {data2.name}</td>
+                          )
+                        }
+
+                        {
+                          data2.nivel.id == 1? (                            
+                            <td style={{textAlign: 'left', backgroundColor:'#CAFFB3'}}>{data2.specialty.name}</td>
+                          ): data2.nivel.id == 2? (                            
+                            <td style={{textAlign: 'left', backgroundColor:'#FFFFB3'}}>{data2.specialty.name}</td>
+                          ):(                            
+                            <td style={{textAlign: 'left', backgroundColor:'#FFBBB3'}}>{data2.specialty.name}</td>
+                          )
+                        }
+                          
+                          <td key="edit">
+                            <Button type="primary" size="large" onClick={() => 
+                                {             
+                                  formik.values.name = data2.name;             
+                                  formik.values.team = data2.team.id;
+                                  formik.values.id = data2.id;  
+                                  console.log(data2); 
+                                  setEditar(true);                               
+                                  setVisible(true);
+                                }
+                              }>
+                              <EditOutlined />
+                            </Button>        
+                            </td>
+                        </tr>
+                      ))}
+              </tbody>
+            </table>            
             ))}
-          </tbody>
-        </table>
-      ),
-      onOk() {},
-    });
+          </div>
+          ),
+          onOk() {},
+        });
+  
+      }
+      );  
   };
+
+  const handleCloseDrawer = () => {
+    setVisible(false);
+    formik.resetForm();
+  };
+
+  const editarMedico = (e) => {
+    console.log(e);
+  }
+
+  
+  const hanldeSelectNombre = (e) => {
+    console.log(e);
+    console.log(e.nativeEvent);    
+    console.log(e.nativeEvent.data);
+    
+    formik.values.name = e.nativeEvent.data;
+
+};
+
+  const hanldeSelectCategoria = (e) => {
+      console.log(e);
+      if(e == 1){
+        setPlaceCategoria('Medicina');
+        setCategoria(e);
+        cargarListado(e);        
+      }
+      if(e == 2){
+        setPlaceCategoria('Cirugía');
+        setCategoria(e);
+        cargarListado(e); 
+      }
+  };
+
+  
+  
+  const hanldeSelectNombreMedico = (e) => {
+    console.log(e);
+        
+    doctoreslst.find(x => {
+      if(x.id == e){        
+        formik.values.name = x.name;
+        formik.values.id = e;
+        setPlaceNombre(formik.values.name);
+      }
+    });
+
+};
+
+
+  const hanldeSelectTeama = (e) => {
+    console.log(e);
+    console.log(formik.values.team);
+
+    team1.find(x => {
+
+      if(x.idGrupo == e){
+        setPlaceGrupo(x.nombreGrupo);
+      }
+
+    });
+
+    
+    formik.values.team  = e;
+    
+};
 
   useEffect(() => {
     setIdTeam(null);
-    getDoctorsByTeam(1).then(setTeam1);
-    getDoctorsByTeam(2).then(setTeam2);
-    getDoctorsByTeam(3).then(setTeam3);
-    getDoctorsByTeam(4).then(setTeam4);
-    getDoctorsByTeam(5).then(setTeam5);
-    getDoctorsByTeam(6).then(setTeam6);
-    getDoctorsByTeam(7).then(setTeam7);
-    getDoctorsByTeam(8).then(setTeam8);
-    getDoctorsByTeam(9).then(setTeam9);
-    getDoctorsByTeam(10).then(setTeam10);
+    cargarDoctores();
+
+    findAllTipos().then( x =>
+      {  
+        setCategoriaslst(x);
+      }
+      );
+
+      getTeamIdCategoriaTodos().then( x => {
+        setTeam1(x);
+      });
+
+
   }, []);
+
+  
+const cargarListado = (cate) => {
+    getDoctorsByTeamTipo(1, cate).then( x => {
+      console.log(x);
+      setTeam1(x) ;
+    });
+};
+
+const validationSchema = Yup.object().shape({
+  // name: Yup.string()
+  //   .trim()
+  //   .matches(/^[ñÑa-zA-Z ]*$/, "Solo se admiten letras.")
+  //   .required("Nombre requerido."),
+  // shortName: Yup.string()
+  //   .trim()
+  //   .matches(/^[ñÑa-zA-Z ]*$/, "Solo se admiten letras.")
+  //   .required("Nombre Abreviado requerido."),
+});
+
+
+const openNotification = (msg, description, placement) => {
+  notification.success({
+    message: msg,
+    description: description,
+    placement,
+  });
+};
+
+
+const formik = useFormik({
+  initialValues: {
+    name: "",
+    shortName: "",
+    status: true,
+  },
+  validationSchema,
+  onSubmit: (value) => {
+    console.log(value);
+  
+    createDoctorGrupo(value.id, value.name, value.team).then((resp) => {
+         console.log(resp);                
+         setVisible(false);
+         cargarListado(categoriaId);
+         openNotification("Guardado Correctamente", "", "topRight");
+       });
+   
+   
+    
+    formik.resetForm();
+  },
+});
+
+
+
+  const borrarDoctor = (id) => {
+    borrarDoctorGrupo(id).then((resp) => {
+      console.log(resp);
+      setVisible(false);
+      cargarListado(categoriaId);
+      openNotification("Eliminado Correctamente", "", "topRight");
+    });
+  }
+
+  const cargarDoctores = () => {
+    getDoctors().then((resp) => {    
+      var resp2 = [];
+      resp.forEach(element => {
+        if(element.status){
+          resp2.push(element);
+        }
+      });
+      
+      setDoctoreslst(resp2);
+    });
+  }
+  
+
 
   return (
     <div className="mantenimiento">
@@ -93,8 +275,48 @@ export const Grupo = () => {
             <Breadcrumb.Item>Grupos</Breadcrumb.Item>
           </Breadcrumb>
         </h2>
+        <Button type="primary" size="large" onClick={() =>           
+          {
+            formik.values.name = null;
+            formik.values.shortName = null;
+            formik.values.true = null;
+            formik.values.id = null;
+            cargarDoctores();
+            setEditar(false);
+            setVisible(true);
+          }
+          }>
+          <PlusOutlined /> Agregar
+        </Button>
       </header>
       <div className="content">
+        {/* TIPOS */}
+        <Form layout="inline" style={{ marginBottom: "20px" }}>
+          <Form.Item label="Categoría">
+            <Select
+              showSearch
+              name="cateogria"
+              placeholder= {placeCategoria}
+              optionFilterProp="children"
+              style={{ width: "300px", marginLeft: "45px" }}
+              value={idTeam}
+              onChange={hanldeSelectCategoria}
+              filterOption={(input, option) =>
+                option.props.children
+                  .toLowerCase()
+                  .indexOf(input.toLowerCase()) >= 0
+              }
+            >
+                {categoriaslst.map((data) => (
+                <Select.Option key={data.name} value={data.id}>
+                {data.name}
+                </Select.Option>
+                ))}
+            </Select>
+          </Form.Item>
+        </Form>
+        
+        {/* //grupos */}
         <Form layout="inline" style={{ marginBottom: "20px" }}>
           <Form.Item label="Filtrar por Grupo">
             <Select
@@ -109,215 +331,192 @@ export const Grupo = () => {
                 option.props.children
                   .toLowerCase()
                   .indexOf(input.toLowerCase()) >= 0
-              }
-            >
-              <Select.Option key={1} value={1}>
-                Grupo 01
+              }>
+            {team1.map((data) => (
+              <Select.Option key={data.idGrupo} value={data.idGrupo}>
+             {data.nombreGrupo}
               </Select.Option>
-              <Select.Option key={2} value={2}>
-                Grupo 02
-              </Select.Option>
-              <Select.Option key={3} value={3}>
-                Grupo 03
-              </Select.Option>
-              <Select.Option key={4} value={4}>
-                Grupo 04
-              </Select.Option>
-              <Select.Option key={5} value={5}>
-                Grupo 05
-              </Select.Option>
-              <Select.Option key={6} value={6}>
-                Grupo 06
-              </Select.Option>
-              <Select.Option key={7} value={7}>
-                Grupo 07
-              </Select.Option>
-              <Select.Option key={8} value={8}>
-                Grupo 08
-              </Select.Option>
-              <Select.Option key={9} value={9}>
-                Grupo 09
-              </Select.Option>
-              <Select.Option key={10} value={10}>
-                Grupo 10
-              </Select.Option>
+              ))}
             </Select>
           </Form.Item>
         </Form>
+          
         <div
           className="table-group table-responsive"
-          style={{ textAlign: "center", display: "flex" }}
-        >
-          <table className="table table-striped table-hover" border="1">
-            <thead>
-              <tr>
-                <th>Grupo 01</th>
-              </tr>
-            </thead>
-            <tbody>
-              {team1.map((data) => (
-                <tr>
-                  <td key={data.id}>
-                    {data.name} {data.paternalSurname}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <table className="table table-striped table-hover" border="1">
-            <thead>
-              <tr>
-                <th>Grupo 02</th>
-              </tr>
-            </thead>
-            <tbody>
-              {team2.map((data) => (
-                <tr>
-                  <td key={data.id}>
-                    {data.name} {data.paternalSurname}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          style={{ textAlign: "center", display: "flex" }}>
 
-          <table className="table table-striped table-hover" border="1">
-            <thead>
-              <tr>
-                <th>Grupo 03</th>
-              </tr>
-            </thead>
-            <tbody>
-              {team3.map((data) => (
-                <tr>
-                  <td key={data.id}>
-                    {data.name} {data.paternalSurname}
+            {team1.map((data) => (
+                <table className="table table-striped table-hover" border="1" style={{width: "340px", marginRight: "10px"}}>
+                <thead>
+                  <tr >
+                    <th> {data.nombreGrupo}</th>
+                    <th> Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.doctores.map((data2) => (
+                    <tr >
+                       {
+                data2.nivel.id == 1? (
+                    <td key={data2.id} style={{textAlign: 'left', backgroundColor:'#CAFFB3'}}>
+                    {data2.name} {data2.paternalSurname}
+                    </td>
+                ): data2.nivel.id == 2? (
+                  <td key={data2.id} style={{textAlign: 'left', backgroundColor:'#FFFFB3'}}>
+                  {data2.name} {data2.paternalSurname}
                   </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                ):(
+                  <td key={data2.id} style={{textAlign: 'left', backgroundColor:'#FFBBB3'}}>
+                  {data2.name} {data2.paternalSurname}
+                  </td>
+                )
+              }
+                                                                  
+                      <td key="edit">
 
-          <table className="table table-striped table-hover" border="1">
-            <thead>
-              <tr>
-                <th>Grupo 04</th>
-              </tr>
-            </thead>
-            <tbody>
-              {team4.map((data) => (
-                <tr>
-                  <td key={data.id}>
-                    {data.name} {data.paternalSurname}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                      <Button type="primary" size="large" onClick={() => 
+                          {                    
+                            formik.values.name = data2.name;             
+                            formik.values.team = data2.team.id;
+                            formik.values.id = data2.id;
+                            console.log(data2);
+                            setEditar(true);
+                            setVisible(true);          
+                          }
+                        
+                        }>
+                        <EditOutlined />
+                      </Button>        
 
-          <table className="table table-striped table-hover" border="1">
-            <thead>
-              <tr>
-                <th>Grupo 05</th>
-              </tr>
-            </thead>
-            <tbody>
-              {team5.map((data) => (
-                <tr>
-                  <td key={data.id}>
-                    {data.name} {data.paternalSurname}
-                  </td>
-                </tr>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
               ))}
-            </tbody>
-          </table>
-
-          <table className="table table-striped table-hover" border="1">
-            <thead>
-              <tr>
-                <th>Grupo 06</th>
-              </tr>
-            </thead>
-            <tbody>
-              {team6.map((data) => (
-                <tr>
-                  <td key={data.id}>
-                    {data.name} {data.paternalSurname}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          <table className="table table-striped table-hover" border="1">
-            <thead>
-              <tr>
-                <th>Grupo 07</th>
-              </tr>
-            </thead>
-            <tbody>
-              {team7.map((data) => (
-                <tr>
-                  <td key={data.id}>
-                    {data.name} {data.paternalSurname}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          <table className="table table-striped table-hover" border="1">
-            <thead>
-              <tr>
-                <th>Grupo 08</th>
-              </tr>
-            </thead>
-            <tbody>
-              {team8.map((data) => (
-                <tr>
-                  <td key={data.id}>
-                    {data.name} {data.paternalSurname}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          <table className="table table-striped table-hover" border="1">
-            <thead>
-              <tr>
-                <th>Grupo 09</th>
-              </tr>
-            </thead>
-            <tbody>
-              {team9.map((data) => (
-                <tr>
-                  <td key={data.id}>
-                    {data.name} {data.paternalSurname}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          <table className="table table-striped table-hover" border="1">
-            <thead>
-              <tr>
-                <th>Grupo 10</th>
-              </tr>
-            </thead>
-            <tbody>
-              {team10.map((data) => (
-                <tr>
-                  <td key={data.id}>
-                    {data.name} {data.paternalSurname}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      
         </div>
       </div>
+
+
+      <Drawer
+          title="Médico"
+          placement="right"
+          closable={false}
+
+          width={400}
+          onClose={handleCloseDrawer}
+          visible={visible}
+        >
+          <Form
+            title="Medico"
+            layout="vertical"
+            onSubmitCapture={formik.handleSubmit}
+          >
+            <Form.Item label="Nombre:" required>
+
+            {
+                editar? (
+              
+                  <Input
+                  name="name"
+                  disabled                 
+                  value={formik.values.name}
+                  onChange={formik.handleChange}
+                />
+                ) :    
+                <Select
+              showSearch
+              name="medico"
+              placeholder= {placeNombre}
+              optionFilterProp="children"
+              style={{ width: "300px"}}
+              value={formik.values.name}
+              onChange={hanldeSelectNombreMedico}
+              filterOption={(input, option) =>
+                option.props.children
+                  .toLowerCase()
+                  .indexOf(input.toLowerCase()) >= 0
+              }
+            >
+                {doctoreslst.map((data) => (
+                <Select.Option key={data.id} value={data.id}>
+                {data.name}
+                </Select.Option>
+                ))}
+            </Select>
+              } 
+                {formik.errors.name && formik.touched.name ? (
+                  <div className="error-field">{formik.errors.name}</div>
+                ) : null}
+            </Form.Item>
+           
+            <Form.Item label="Categoría">
+            <Select
+              showSearch
+              name="cateogria"
+              placeholder= {placeCategoria}
+              optionFilterProp="children"
+              style={{ width: "300px"}}
+              value={formik.values.categoria}
+              onChange={hanldeSelectCategoria}
+              filterOption={(input, option) =>
+                option.props.children
+                  .toLowerCase()
+                  .indexOf(input.toLowerCase()) >= 0
+              }
+            >
+                {categoriaslst.map((data) => (
+                <Select.Option key={data.name} value={data.id}>
+                {data.name}
+                </Select.Option>
+                ))}
+            </Select>
+          </Form.Item>
+
+          <Form.Item label="Grupo">
+            <Select
+              showSearch
+              name="specialty2"
+              placeholder="Seleccione un Grupo"
+              optionFilterProp="children"
+              style={{ width: "300px" }}
+              value={formik.values.team}
+              onChange={hanldeSelectTeama}  
+              filterOption={(input, option) =>
+                option.props.children
+                  .toLowerCase()
+                  .indexOf(input.toLowerCase()) >= 0
+              }>
+            {team1.map((data) => (
+              <Select.Option key={data.nombreGrupo} value={data.idGrupo}>
+             {data.nombreGrupo}
+              </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+               {
+                editar? (
+                <Button type="primary" htmlType="submit"  block> Actualizar</Button>
+                ) : <Button type="primary" htmlType="submit"  block> Registrar</Button>
+              } 
+              <Button type="danger" 
+              onClick={() => 
+                {     console.log(formik.values.idta2); 
+                  borrarDoctor(formik.values.id);           
+                
+                }
+              }
+              block> Eliminar</Button>
+
+            
+          </Form>
+        </Drawer>
+
     </div>
+
+
+
   );
 };
