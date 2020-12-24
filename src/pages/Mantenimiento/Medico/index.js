@@ -14,10 +14,14 @@ import {
   Col,
   notification,
   Tooltip,
+  Modal,
+  Upload,
+  message
 } from "antd";
-import { EditOutlined, PlusOutlined, ClockCircleOutlined } from "@ant-design/icons";
+import { EditOutlined, PlusOutlined, ClockCircleOutlined, UploadOutlined  } from "@ant-design/icons";
 import { useFormik } from "formik";
-import { updateDoctor, createDoctor, getDoctors, upgradeDoctorLevel } from "../../../services/DoctorService";
+import {OutTable, ExcelRenderer} from 'react-excel-renderer';
+import { updateDoctor, createDoctor, getDoctors, upgradeDoctorLevel, saveImportedDoctor } from "../../../services/DoctorService";
 import { getSchoolsAgreements } from "../../../services/SchoolAgreementService";
 import { getSpecialties } from "../../../services/SpecialtyService";
 import { getPlazas } from "../../../services/PlazaService";
@@ -29,6 +33,7 @@ import moment from "moment";
 import "../Mantenimiento.css";
 import { getNiveles } from "../../../services/NivelService";
 import { getTeams } from "../../../services/TeamService";
+import ImportFromExcel from "./ImportFromExcel";
 
 const openNotification = (msg, description, placement) => {
   notification.success({
@@ -53,6 +58,7 @@ export const Medico = () => {
   const [filterTable, setFilterTable] = useState(null);
   const [dataSource, setDataSource] = useState([]);
   const [editar, setEditar] = useState(false);
+  const [isImportDataModalVisible, setIsModalImportDataVisible] = useState(false);
 
   const [schoolsAgreements, setSchoolsAgreements] = useState([]);
   const [specialties, setSpecialties] = useState([]);
@@ -61,17 +67,31 @@ export const Medico = () => {
   const [teams, setTeams] = useState([]);
   const [niveles, setNiveles] = useState([]);
 
+  const [isOpen, setOpen] = useState(false);
+  const [dataLoaded, setDataLoaded] = useState(false);
+  const [isFormInvalid, setFormInvalid] = useState(false);
+  const [rows, setRows] = useState([]);
+  const [cols, setCols] = useState(false);
+  const [uploadedFileName, setUploadedFileName] = useState(null);
+  
+
   const listar = () => {
     getDoctors().then((resp) => {
       resp.forEach((data) => {
         data.key = data.id;
-        data.schoolName = data.schoolAgreement.school.shortName;
-        data.specialtyName = data.specialty.name;
-        data.plazaName = data.plaza.name;
-        data.campusName = data.campus.name;
-        data.lastName = data.paternalSurname + " " + data.maternalSurname;
+        data.schoolName = data.schoolAgreement == null ? "Sin definir" : data.schoolAgreement.school.shortName;
+        data.specialtyName = data.specialty == null ? "Sin definir" : data.specialty.name;
+        data.plazaName = data.plaza == null ? "Sin definir" : data.plaza.name;
+        data.campusName = data.campus == null || data.campus ? "Sin definir" : data.campus.name;
+        data.lastName = data.paternalSurname == null ? "Sin definir" : data.paternalSurname + "" + data.maternalSurname;
         // data.teamName = "Grupo " + data.team.name;
-        data.nivelName = data.nivel.name;
+        data.nivelName = data.nivel == null ? "Sin definir" : data.nivel.name;
+        data.phone = data.phone == null || data.phone.trim() == "" ? "Sin definir" : data.phone;
+        data.email = data.email == null || data.email.trim() == "" ? "Sin definir" : data.email;
+        data.birthDate = data.birthDate == null || data.birthDate.trim() == "" ? "Sin definir" : data.birthDate;
+        data.address = data.address == null || data.address.trim() == "" ? "Sin definir" : data.address;
+
+        
       });
       setDataSource(resp);
       console.log(resp);
@@ -387,23 +407,23 @@ export const Medico = () => {
   function setDataDoctorToForm(doctor)
   { formik.initialValues.action = "update";
     formik.initialValues.id = doctor.id;
-    formik.initialValues.document = doctor.document;
-    formik.initialValues.paternalSurname = doctor.paternalSurname;
-    formik.initialValues.maternalSurname = doctor.maternalSurname;
-    formik.initialValues.name = doctor.name;
-    formik.initialValues.schoolAgreement.id = doctor.schoolAgreement.id;
-    formik.initialValues.specialty.id = doctor.specialty.id;
-    formik.initialValues.plaza.id = doctor.plaza.id;
-    formik.initialValues.campus.id = doctor.campus.id;
-    formik.initialValues.plazaName = doctor.campus.plazaName;
+    formik.initialValues.document = doctor.document == null ? "" : doctor.document;
+    formik.initialValues.paternalSurname = doctor.paternalSurname == null ? "" : doctor.paternalSurname;
+    formik.initialValues.maternalSurname = doctor.maternalSurname == null ? "" : doctor.maternalSurname;
+    formik.initialValues.name = doctor.name == null ? "" : doctor.name;
+    formik.initialValues.schoolAgreement.id = doctor.schoolAgreement == null ? 1 : doctor.schoolAgreement.id;
+    formik.initialValues.specialty.id = doctor.specialty == null ? 1 : doctor.specialty.id;
+    formik.initialValues.plaza.id = doctor.plaza == null ? 1 : doctor.plaza.id;
+    formik.initialValues.campus.id = doctor.campus == null ? 1 : doctor.campus.id;
+    formik.initialValues.plazaName = doctor.campus == null ? "" : doctor.campus.plazaName;
     
-    formik.initialValues.nivel.id = doctor.nivel.id;
-    formik.initialValues.birthDate = moment(doctor.birthDate, dateFormatList);
-    formik.initialValues.registeredAt = moment(doctor.registeredAt, dateFormatList);
-    formik.initialValues.address = doctor.address;
-    formik.initialValues.cmp = doctor.cmp;
-    formik.initialValues.email = doctor.email;
-    formik.initialValues.phone = doctor.phone;
+    formik.initialValues.nivel.id = doctor.nivel == null ? 1 : doctor.nivel.id;
+    formik.initialValues.birthDate = doctor.birthDate == null ? moment() : moment(doctor.birthDate, dateFormatList);
+    formik.initialValues.registeredAt = doctor.registeredAt == null ? moment() : moment(doctor.registeredAt, dateFormatList);
+    formik.initialValues.address = doctor.address == null ? "" :doctor.address;
+    formik.initialValues.cmp = doctor.cmp == null ? "" : doctor.cmp;
+    formik.initialValues.email = doctor.email == null ? "" : doctor.email;
+    formik.initialValues.phone = doctor.phone == null ? "" : doctor.phone;
     formik.initialValues.status = doctor.status;
 
     setEditar(true);
@@ -440,6 +460,19 @@ export const Medico = () => {
     return current && current > moment().startOf("day");
   }
 
+  const showModalImport = () => {
+    console.log("Modal", isImportDataModalVisible);
+    setIsModalImportDataVisible(true);
+  };
+
+  const handleModalImportOk = () => {
+    setIsModalImportDataVisible(false);
+  };
+
+  const handleCancelModalImport = () => {
+    setIsModalImportDataVisible(false);
+  };
+  
   useEffect(() => {
     setLoading(false);
     listar();
@@ -450,6 +483,62 @@ export const Medico = () => {
     getNiveles().then(setNiveles);
     getTeams().then(setTeams);
   }, []);
+
+  const props = {
+    name: 'file',
+    action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+    headers: {
+      authorization: 'authorization-text',
+    },
+    onChange(info) {
+      if (info.file.status !== 'uploading') {
+        console.log(info.file, info.fileList);
+      }
+      if (info.file.status === 'done') {
+        message.success(`${info.file.name} file uploaded successfully`);
+      } else if (info.file.status === 'error') {
+        message.error(`${info.file.name} file upload failed.`);
+      }
+    },
+  };
+
+  const renderFile = (fileObj) => {
+      //just pass the fileObj as parameter
+      ExcelRenderer(fileObj, (err, resp) => {
+        if(err){
+          console.log(err);            
+        }
+        else{
+          setDataLoaded(true);
+          setCols(resp.cols);
+          setRows(resp.rows);
+          // this.setState({
+          //   dataLoaded: true,
+          //   cols: resp.cols,
+          //   rows: resp.rows
+          // });
+        }
+      }); 
+  }
+
+  const fileHandler = (event) => {    
+      if(event.fileList.length){
+      let fileObj = event.fileList[0];
+      let fileName = fileObj.name;
+
+      
+      //check for file extension and pass only if it is .xlsx and display error message otherwise
+      if(fileName.slice(fileName.lastIndexOf('.')+1) === "xlsx"){
+        setUploadedFileName(fileName);
+        setFormInvalid(false);        
+        renderFile(fileObj)
+      }    
+      else{
+        setFormInvalid(true);
+        setUploadedFileName("");
+      }
+    }               
+  }
 
   return (
     <div className="mantenimiento">
@@ -464,11 +553,31 @@ export const Medico = () => {
           <Button type="primary" size="large" onClick={() => { cleanDataDoctorToForm({}); setVisibleNewForm(true);}} style={{marginRight:'10px'}}>
             <PlusOutlined /> Agregar
           </Button>          
-          <Tooltip title="Actualizar nivel de Médicos">
+          {/* <Tooltip title="Actualizar nivel de Médicos">
             <Button type="primary" size="large" icon={<ClockCircleOutlined />} onClick={() => { upgradeDoctors() }}/>
-          </Tooltip>
+          </Tooltip> */}
+          <Button type="primary" onClick={showModalImport} size="large">
+          Importar Archivo
+        </Button>        
         </div>        
       </header>
+      <Modal 
+        title="Importar Excel" 
+        visible={isImportDataModalVisible} 
+        //onC={handleModalImportOk} 
+        onCancel={handleCancelModalImport}
+        //okText="Guadar datos"
+        cancelText="Cancelar"
+        width={1300}        
+        okButtonProps={{ style: { display: 'none' } }}
+        >
+          <ImportFromExcel
+           onImportdata={saveImportedDoctor}
+           onListDoctors={listar}
+           onVisibleModal={handleCancelModalImport}
+           onOpenNotification={openNotification}
+          />
+      </Modal>
       <div className="content">
         <Input.Search
           className="searchInput"
@@ -494,7 +603,7 @@ export const Medico = () => {
           <Form
             title="Universidad"
             layout="vertical"
-            onSubmitCapture={formik.handleSubmit}
+            onSubmitCapture={formik.handleSubmit}            
           >
             <Row gutter={12} style={{display:'none'}}>
               <Col span={12}>
