@@ -37,6 +37,11 @@ export const Sidebar = () => {
               </NavLink>
             </li>
             <li>
+              <NavLink to="/mantenimiento/grupo" activeClassName="active">
+                • Asignar Médicos a Grupos
+              </NavLink>
+            </li>
+            <li>
               <NavLink to="/proceso/asignar-grupo" activeClassName="active">
                 • Grupo de guardia en emergencia
               </NavLink>
@@ -67,10 +72,11 @@ export const Sidebar = () => {
               </NavLink>
             </li>
             <li>
-              <NavLink to="/mantenimiento/grupo" activeClassName="active">
+              <NavLink to="/mantenimiento/grupomant" activeClassName="active">
                 • Grupos
               </NavLink>
             </li>
+            
             <li>
               <NavLink to="/mantenimiento/usuario" >
                 • Usuarios
