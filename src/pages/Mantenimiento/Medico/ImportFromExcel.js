@@ -153,19 +153,29 @@ class ImportFromExcel extends Component {
       "plaza" : {
         "id" : row[7].trim().toLowerCase() == "libre" ? 1 : 2,
       },
-      "campus" : null,
+      "campus" : {
+        "id" : row[8],
+      },
       "birthDate" : row[9] == "" || row[9] == null ? null : this.excelDateToJSDate(row[9]),
       //"birthDate" : null,
       "address" : row[10] == "" || row[10] == null ? null : row[10],
       "cmp" : row[11] == "" || row[11] == null ? null : row[11].toString(),
       "email" : row[12] == "" || row[12] == null ? "" : row[12],
       "phone" : row[13]  == "" || row[13] == null ? "" : row[13].toString(),
-      "schoolAgreement" : null,
-      "specialty" : null,
+      "schoolAgreement" : {
+        "school" : {
+          "shortName" : row[5]  == "" || row[5] == null ? null : row[5].toString(),
+        }
+      },
+      "specialty" : {
+        "id" : row[6]
+      },
       "status" : true,
       "team" : null,
-      "nivel" : null,
-      "registeredAt" : null,      
+      "nivel" : {
+        "id" : 1
+      },
+      "registeredAt" : row[14] == "" || row[14] == null ? null : this.excelDateToJSDate(row[14]),
     }
   }
 
@@ -192,7 +202,7 @@ class ImportFromExcel extends Component {
     let lstDoctors = this.state.rows;
     lstDoctors = lstDoctors.filter((doctor, key) => key > 0);
     let transformedArr = lstDoctors.map(this.converToDoctor);
-    // console.log(transformedArr);
+    console.log(transformedArr);
     this.props.onImportdata(transformedArr).then((resp) => {
         console.log(resp);
         this.cleanState();

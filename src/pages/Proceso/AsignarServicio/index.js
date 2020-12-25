@@ -174,7 +174,7 @@ export const AsignarServicio = () => {
           )}
         </div>
       </div>
-      <Modal 
+      {/* <Modal 
         title="" 
         visible={isImportDataModalVisible} 
         //onC={handleModalImportOk} 
@@ -184,7 +184,7 @@ export const AsignarServicio = () => {
         width={1300}        
         okButtonProps={{ style: { display: 'none' } }}
         >
-      </Modal>
+      </Modal> */}
     </div>
   );
 };

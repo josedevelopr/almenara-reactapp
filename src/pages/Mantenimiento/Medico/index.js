@@ -82,7 +82,7 @@ export const Medico = () => {
         data.schoolName = data.schoolAgreement == null ? "Sin definir" : data.schoolAgreement.school.shortName;
         data.specialtyName = data.specialty == null ? "Sin definir" : data.specialty.name;
         data.plazaName = data.plaza == null ? "Sin definir" : data.plaza.name;
-        data.campusName = data.campus == null || data.campus ? "Sin definir" : data.campus.name;
+        data.campusName = data.campus == null ? "Sin definir" : data.campus.name;
         data.lastName = data.paternalSurname == null ? "Sin definir" : data.paternalSurname + "" + data.maternalSurname;
         // data.teamName = "Grupo " + data.team.name;
         data.nivelName = data.nivel == null ? "Sin definir" : data.nivel.name;
