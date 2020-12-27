@@ -15,6 +15,12 @@ const createDoctor = async (data) => {
   return resp.data;
 };
 
+const saveImportedDoctor = async (data) => {
+  console.log(data); 
+  const resp = await clienteAxios.post("/doctors/import/doctor", data); 
+  return resp.data;
+};
+
 const updateDoctor = async (data) => {
   const resp = await clienteAxios.put(`/doctors/${data.id}`, data);
   return resp.data;
@@ -68,4 +74,4 @@ const upgradeDoctorLevel = async () => {
 };
 
 export { getDoctors, createDoctor, viewPdfDoctor, getDoctorsByTeam, getDoctorsByTeamTipo, getTeamIdCategoriaTodos, 
-  getFindAllByTeamIdGrupo,findAllTipos, createDoctorGrupo, borrarDoctorGrupo, updateDoctor, upgradeDoctorLevel };
+  getFindAllByTeamIdGrupo,findAllTipos, createDoctorGrupo, borrarDoctorGrupo, updateDoctor, upgradeDoctorLevel, saveImportedDoctor };
