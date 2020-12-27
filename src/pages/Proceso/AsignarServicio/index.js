@@ -6,17 +6,96 @@ import {
   viewPdfServiciosDoctor,
   viewPdfServiciosDoctorFilterSpecialty,
 } from "../../../services/ServicioDoctorService";
-import { Form, Breadcrumb, Button, Select, Empty, Modal } from "antd";
+import { Form, Breadcrumb, Button, Select, Empty, Modal, Input, Row, Col, Drawer, notification } from "antd";
+import { useFormik } from "formik";
 import { getSpecialties } from "../../../services/SpecialtyService";
+import { updateServicioDelegado } from "../../../services/ServicioDelegadoService";
+import * as Yup from "yup";
 
 export const AsignarServicio = () => {
   const [serviciosDoctor, setServiciosDoctor] = useState([]);
   const [specialties, setSpecialties] = useState([]);
   const [filterSpecialtyOn, setfilterSpecialtyOn] = useState(false);
   const [idSpecialty, setIdSpecialty] = useState(null);
+  const [isImportDataModalVisible, setIsModalImportDataVisible] = useState(false);  
+  const [serviceSpecialities, setServiceSpecialities] = useState([]);
+  const [selectedMonth, setSelectedMonth] = useState(null);
+
+  const editService = (data, data3) => {
+    setIsModalImportDataVisible(true);    
+    console.log(data3);
+    console.log(data.doctor.specialty.servicios);    
+
+    let monthID = data3.mes.id;
+    let monthName = getMonthName(monthID);
+    let serviceSpecialities = data.doctor.specialty.servicios;
+    
+    formik.values.id = data3.id;
+    formik.values.mes = {id : monthID, nombre : monthName}    
+    formik.values.servicio = {id : data3.servicio.id, nombre : data3.servicio.nombre}    
+    setSelectedMonth(monthName);
+    setServiceSpecialities( serviceSpecialities.length > 0 ? data.doctor.specialty.servicios : []);
+
+  };
+
+  const getMonthName = (monthNumber) => {
+    let monthNames = ["Julio", "Agosto", "Setiembre", "Octubre", "Noviembre", "Diciembre", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio"];
+    return monthNames[monthNumber-1];
+  }
+
+  const validationSchema = Yup.object().shape({
+    servicio: Yup.object().shape({
+      id: Yup.number().nullable().required("Servicio requerida"),
+    }),
+  });
+
+  const formik = useFormik({
+    initialValues : {
+      id : null,
+      mes : {
+        id : null, 
+        nombre : null
+      },
+      servicio : {
+        id : null,
+        nombre : null
+      },
+    },
+    validationSchema,
+    onSubmit: (value) => {     
+      updateServicioDelegado(value).then((resp) => {
+        listar();
+        setIsModalImportDataVisible(false);
+        openNotification("Actualizado Correctamente", "", "topRight");
+        formik.resetForm();
+      }).catch(function (error) {        
+          openErrorNotification("Hubo un error mientras se actualizaba", "", "topRight");                    
+      }); 
+    },
+  });
+
+  const openNotification = (msg, description, placement) => {
+    notification.success({
+      message: msg,
+      description: description,
+      placement,
+    });
+  };
+  
+  const openErrorNotification = (msg, description, placement) => {
+    notification.error({
+      message: msg,
+      description: description,
+      placement,
+    });
+  };
+
+  const handleCancelModalImport = () => {
+    setIsModalImportDataVisible(false);
+  };
 
   const listar = () => {
-    getServiciosDoctor().then(setServiciosDoctor);
+    getServiciosDoctor().then(setServiciosDoctor).catch((err) => console.log(err.response));
   };
 
   const listarByIdSpecialty = (id) => {
@@ -57,7 +136,7 @@ export const AsignarServicio = () => {
             <Breadcrumb.Item>Servicio Médico</Breadcrumb.Item>
           </Breadcrumb>
         </h2>
-        <Button
+        {/* <Button
           type="dashed"
           color="red"
           size="large"
@@ -65,7 +144,7 @@ export const AsignarServicio = () => {
           onClick={exportToPdf}
         >
           <FilePdfTwoTone twoToneColor="red" /> Exportar a PDF
-        </Button>
+        </Button> */}
       </header>
       <div className="content">
         <Form layout="inline" style={{ marginBottom: "20px" }}>
@@ -158,10 +237,11 @@ export const AsignarServicio = () => {
                             <Button
                                 color="blue-1"
                                 size="small"
-                                onClick={exportToPdf}
+                                onClick={() => {editService(data, data3)}}
                                 style={{marginTop:"5px"}}
                             >
-                                <EditOutlined/></Button>
+                                <EditOutlined/>
+                            </Button>
                             {/* respaw */}
                           </td>
                         ))}
@@ -173,18 +253,59 @@ export const AsignarServicio = () => {
             </table>
           )}
         </div>
-      </div>
-      {/* <Modal 
-        title="" 
-        visible={isImportDataModalVisible} 
-        //onC={handleModalImportOk} 
-        onCancel={handleCancelModalImport}
-        //okText="Guadar datos"
-        cancelText="Cancelar"
-        width={1300}        
-        okButtonProps={{ style: { display: 'none' } }}
+      </div>      
+      <Drawer
+          title="Editar Servicio"
+          placement="right"
+          closable={false}
+          width={500}
+          onClose={handleCancelModalImport}
+          visible={isImportDataModalVisible}
+          id="newForm"
         >
-      </Modal> */}
+          <Form layout="vertical" onSubmitCapture={formik.handleSubmit}   >              
+            <Form.Item label="Periodo">
+              <Input
+                name="document"
+                // value={formik.values.document}
+                // onChange={formik.handleChange}
+                value={selectedMonth}
+                disabled={true}
+              />
+            </Form.Item>
+            
+                <Form.Item label="Servicio">
+                  <Select
+                    showSearch
+                    name="servicio.id"
+                    placeholder="Seleccione un servicio"
+                    optionFilterProp="children"
+                    style={{ width: "100%" }}
+                    value={formik.values.servicio.id}
+                    onChange={(text) => formik.setFieldValue("servicio.id", text)}
+                    filterOption={(input, option) =>
+                      option.props.children
+                        .toLowerCase()
+                        .indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    {serviceSpecialities.map((data) => (
+                      <Select.Option key={data.id} value={data.id}>
+                        {data.name}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                  {formik.errors.servicio && formik.touched.servicio ? (
+                    <div className="error-field">{formik.errors.servicio.id}</div>
+                  ) : null}
+              </Form.Item>              
+            <Form.Item>
+              <Button  type="primary" size="small" htmlType="submit" block>
+                Guardar
+              </Button>
+            </Form.Item>
+          </Form>
+      </Drawer>
     </div>
   );
 };
