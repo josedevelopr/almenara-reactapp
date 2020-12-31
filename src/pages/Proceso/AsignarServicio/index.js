@@ -32,7 +32,7 @@ export const AsignarServicio = () => {
     
     formik.values.id = data3.id;
     formik.values.mes = {id : monthID, nombre : monthName}    
-    formik.values.servicio = {id : data3.servicio.id, nombre : data3.servicio.nombre}    
+    formik.values.servicio = {id : data3.servicio != null ? data3.servicio.id : null, nombre : data3.servicio != null ?data3.servicio.nombre : ""}    
     setSelectedMonth(monthName);
     setServiceSpecialities( serviceSpecialities.length > 0 ? data.doctor.specialty.servicios : []);
 
@@ -216,24 +216,22 @@ export const AsignarServicio = () => {
                       <td rowSpan="4">{data.doctor.specialty.name}</td>
                     </tr>
                     {data.anioAcademicoDelegados.map((data2) => (
-                      <tr key={String(data.id).concat(String(data2.id))}>
-                        <td>{data2.anioAcademico.codigo}</td>
+                      <tr key={String(data.id).concat(String(data2 == null ? 0 : data2.id))}>
+                        <td>{data2.anioAcademico !=  null ? data2.anioAcademico.codigo : "No definido"}</td>
                         <td>
-                          {data2.anioAcademico.anioInicio} -{" "}
-                          {data2.anioAcademico.anioFinal}
+                          {data2.anioAcademico != null ? data2.anioAcademico.anioInicio : "No definido"} -{" "}
+                          {data2.anioAcademico != null ? data2.anioAcademico.anioFinal : "No definido"}
                         </td>
-                        {data2.servicioDelegados.map((data3) => (
+                        { data2.servicioDelegados.map((data3) => (
                           <td
                             key={String(data.id)
-                              .concat(String(data2.id))
-                              .concat(String(data3.id))}
+                              .concat(String(data2.id == null ? 0 : data2.id))
+                              .concat(String(data3.id != null ? data3.id : data2.id == null ? 0 : data2.id))}
                             style={
-                              data3.servicio.id === 1
-                                ? { background: "#abe1ff" }
-                                : {}
+                               data3.servicio == null ? {background : "#cca6a1"} : data3.servicio.id == 1 ? {background: "#abe1ff"} : {}
                             }
                           >
-                            {data3.servicio.name} <br/>
+                            {data3.servicio == null ? "No definido" : data3.servicio.name} <br/>
                             <Button
                                 color="blue-1"
                                 size="small"
