@@ -41,7 +41,7 @@ export const Grupo = () => {
         grupoDoctores = x;
 
         Modal.info({
-          title: "Grupo",
+          title: "Asignar Grupo",
           content: (
             <div>
             {grupoDoctores.map((data) => (              
@@ -268,11 +268,11 @@ const formik = useFormik({
 
   return (
     <div className="mantenimiento">
-      <header>
+      <header>       
         <h2 className="title">
           <Breadcrumb>
             <Breadcrumb.Item>Mantenimiento</Breadcrumb.Item>
-            <Breadcrumb.Item>Grupos</Breadcrumb.Item>
+            <Breadcrumb.Item>Asignar Grupos</Breadcrumb.Item>
           </Breadcrumb>
         </h2>
         <Button type="primary" size="large" onClick={() =>           
@@ -341,6 +341,15 @@ const formik = useFormik({
           </Form.Item>
         </Form>
           
+
+              <p >Leyenda de colores: Residente Nivel 1:  
+                <span style={{color: "#CAFFB3", border: "1px solid black", borderRadius:"10px", paddingLeft: "10px", paddingRight:"10px", color:"black", backgroundColor:"#CAFFB3", marginLeft:"5px", marginRight:"5px"}}></span>
+                  | Residente Nivel 2: 
+                <span style={{color: "#FFFFB3", border: "1px solid black", borderRadius:"10px", paddingLeft: "10px", paddingRight:"10px", color:"black", backgroundColor:"#FFFFB3", marginLeft:"5px", marginRight:"5px"}}></span>
+                   | Residente Nivel 3:
+                <span style={{color: "#FFBBB3", border: "1px solid black", borderRadius:"10px", paddingLeft: "10px", paddingRight:"10px", color:"black", backgroundColor:"#FFBBB3", marginLeft:"5px", marginRight:"5px"}}></span>
+                   </p>
+
         <div
           className="table-group table-responsive"
           style={{ textAlign: "center", display: "flex" }}>
