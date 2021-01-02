@@ -4,7 +4,7 @@ import Axios from "axios";
  const URL_NUBE = "https://almenara-api.herokuapp.com/"
 
 const clienteAxios = Axios.create({
-  baseURL: URL_NUBE,
+  baseURL: LOCAL,
 });
 
 export default clienteAxios;
