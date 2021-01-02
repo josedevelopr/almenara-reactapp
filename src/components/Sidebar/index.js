@@ -118,6 +118,11 @@ export const Sidebar = () => {
             • Servicio
           </NavLink>
         </li>
+        <li>
+          <NavLink to="/reporte/servicio/relacion-medicos-residentes-otras-especialidades-por-periodo" activeClassName="active">
+            • Medicos Residentes de otras Especialidades por Periodo
+          </NavLink>
+        </li>        
       </ul>
     </div>
   );
