@@ -175,7 +175,7 @@ export const Grupo = () => {
     setIdTeam(null);
     cargarDoctores();
 
-    findAllTipos().then( x =>
+      findAllTipos().then( x =>
       {  
         setCategoriaslst(x);
       }
