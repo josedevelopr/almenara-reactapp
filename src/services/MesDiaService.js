@@ -7,8 +7,7 @@ const getAllMesDia = async () => {
 
 
 const getAllMesDiaFiltrar = async (anio, mes, categoria) => {
-  const resp = await clienteAxios.get(`/mesdia/filtrar/${anio}/${mes}/${categoria}`);
-  console.log(resp.data);
+  const resp = await clienteAxios.get(`/mesdia/filtrar/${anio}/${mes}/${categoria}`);  
 
   var i = 1;
   resp.data.forEach(element => {

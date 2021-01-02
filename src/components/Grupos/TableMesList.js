@@ -98,12 +98,12 @@ export const TableMesList = () => {
   const clearFilter = () => { 
     setMes(-5);
     var lstMain = [];
-    setLstPeriodo(lstMain);    
+    // setLstPeriodo(lstMain);    
   };
 
   function clear() {
     var lstMain = [];
-    setLstPeriodo(lstMain);    
+    // setLstPeriodo(lstMain);    
   }
   
 
@@ -112,12 +112,11 @@ export const TableMesList = () => {
     setNumMes(e);
     setPeriodo(periodoData.filter((data) => (data.numMes === e)));
     setMes(e);
-    getAllMesDiaFiltrar(anio, e, cate).then( x => {      
-      var lst = [];
-      lst.push(x);
-      setLstPeriodo(lst)
+    var lst = [];
+    getAllMesDiaFiltrar(anio, e, cate).then( x => {            
+      lst.push(x[0]);
+      setLstPeriodo(lst);
     });
-
   };
 
   const handleSelectAnioAcademico = (e) => {
@@ -126,26 +125,42 @@ export const TableMesList = () => {
     setAnioAcademicoCombo(anioAcademicolst.filter((data) => (data.id === e)));
     setAnio(e);
 
-    if(mes == -5){
 
-      periodoData.forEach( per => {
-        getAllMesDiaFiltrar(e, per.numMes, cate).then( x => {
-          var lst = lstPeriodo;
-          lst.push(x);
-          setLstPeriodo(lst);
-        });
-      })
-    }else{
-      getAllMesDiaFiltrar(e, mes, cate).then( x => {
+    if(cate != -5){
+
+      if(mes == -5){
         var lst = [];
-        lst.push(x);
-        setLstPeriodo(lst);
-      });
+        var itemsProcessed = 0;
+        periodoData.forEach( per => {
+          getAllMesDiaFiltrar(e, per.numMes, cate).then( x => {
+            lst.push(x[0]);
+            itemsProcessed++;
+            if(itemsProcessed === periodoData.length) {
+              lst.sort(function(a, b) {
+                var keyA = a.mesnum  + a.anio,
+                  keyB = b.mesnum  + b.anio;
+                if (keyA < keyB) return -1;
+                if (keyA > keyB) return 1;
+                return 0;
+              });
+
+              
+              setLstPeriodo(lst);
+            }
+        
+          });
+        })
+      }else{
+        getAllMesDiaFiltrar(e, mes, cate).then( x => {
+          lst = [];
+          lst.push(x[0]);
+            setLstPeriodo(lst);   
+          
+        });
+      }
+    };
     }
 
-    
-
-  };
 
   const hanldeSelectCategoria = (e) => {
    
@@ -153,36 +168,40 @@ export const TableMesList = () => {
       cargarListado(e);         
       setCate(e);   
       if(mes == -5){
+        var lst = [];
+        var itemsProcessed = 0;
         periodoData.forEach( per => {
           getAllMesDiaFiltrar(anio, per.numMes, e).then( x => {
-            var lst = lstPeriodo;
-            lst.push(x);
-            setLstPeriodo(lst);
+            lst.push(x[0]);
+            itemsProcessed++;
+            if(itemsProcessed === periodoData.length) {
+      
+
+              lst.sort(function(a, b) {
+                var keyA = a.anio,
+                  keyB = b.anio;
+                if (keyA < keyB) return -1;
+                if (keyA > keyB) return 1;
+                return 0;
+              });
+
+              setLstPeriodo(lst);
+            }
           });
-        });
+          
+        });        
+
       }else{
         getAllMesDiaFiltrar(anio, mes, e).then( x => {
-          var lst = [];
-          lst.push(x);
-          setLstPeriodo(lst);
+          lst = [];
+          lst.push(x[0]);
+            setLstPeriodo(lst);
         });
       }
-      
-      
-     
-      
-    // }
-    // if(e == 2){
-    //   setPlaceCategoria('Cirugía');
-    //   setCategoria(e);
-    //   cargarListado(e);
-    // }
+    
 };
 
 const cargarListado = (cate) => {
-  // getDoctorsByTeamTipo(1, cate).then( x => {
-  //   setTeam1(x) ;
-  // });
 };
 
   useEffect(() => {
@@ -228,7 +247,7 @@ const cargarListado = (cate) => {
             optionFilterProp="children"
             style={{ width: "300px",  marginRight: '10px' }}
             value={idAnio}
-            onClick={clear}
+            
             onChange={handleSelectAnioAcademico}
             filterOption={(input, option) =>
               option.props.children
@@ -253,7 +272,7 @@ const cargarListado = (cate) => {
               style={{ width: "300px"}}
               value={categoriaId}
               onChange={hanldeSelectCategoria}
-              onClick={clear}
+             
               filterOption={(input, option) =>
                 option.props.children
                   .toLowerCase()
@@ -276,7 +295,7 @@ const cargarListado = (cate) => {
             optionFilterProp="children"
             style={{ width: "300px",  marginRight: '10px' }}
             value={numMes}
-            onClick={clear}
+            
             onChange={handleSelectMes}
             filterOption={(input, option) =>
               option.props.children
@@ -298,21 +317,18 @@ const cargarListado = (cate) => {
           </Button>
         </Form.Item>
       </Form>
-      <div>
+      <div>      
 
-        {/* {lstPeriodo.map((data) => (
-          //  <p>{data.id}</p>
-            // <div>
-            //   <h1>  </h1>
-            // </div>
-        ))} */}
-
-        {lstPeriodo.map((data) => (
-            <TableMes dataTabla={data} listaGrupos={teams}>
+       {lstPeriodo.map((data) => (         
+            <TableMes key={data.key} dataTabla={data} listaGrupos={teams}>
             </TableMes>
-        ))}
+        ))} 
 
       </div>
     </div>
   );
+
+
+  
+
 };
