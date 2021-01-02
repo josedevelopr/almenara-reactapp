@@ -4,8 +4,10 @@ import { TableMes } from "./TableMes";
 import { findAllTipos } from "../../services/DoctorService";
 import { getAllAnioAcademico } from "../../services/AnioAcademicoService";
 import { getAllMesDiaFiltrar } from "../../services/MesDiaService";
+import { getTeams } from "../../services/TeamService";
 
 let aniosAcademicos = [];
+let teams = [];
 
 let periodoData = [
   {
@@ -73,6 +75,8 @@ let periodoData = [
 export const TableMesList = () => {
   const [numMes, setNumMes] = useState(null);
   const [periodo, setPeriodo] = useState([]);
+
+  const [lstPeriodo, setLstPeriodo] = useState([]);
   
   const [idAnio, setIdAnio] = useState(null);   
 
@@ -91,42 +95,81 @@ export const TableMesList = () => {
 
   // const [filter, setFilter] = useState([]);
 
-  const clearFilter = () => {
-    setNumMes(null);    
+  const clearFilter = () => { 
     setMes(-5);
-    setPeriodo([]);
+    var lstMain = [];
+    setLstPeriodo(lstMain);    
   };
+
+  function clear() {
+    var lstMain = [];
+    setLstPeriodo(lstMain);    
+  }
+  
+
   const handleSelectMes = (e) => {
+
     setNumMes(e);
     setPeriodo(periodoData.filter((data) => (data.numMes === e)));
     setMes(e);
-    getAllMesDiaFiltrar(anio, e, cate).then( x => {
-      setPeriodo(x);      
+    getAllMesDiaFiltrar(anio, e, cate).then( x => {      
+      var lst = [];
+      lst.push(x);
+      setLstPeriodo(lst)
     });
 
   };
 
   const handleSelectAnioAcademico = (e) => {
+   
     setIdAnio(e);
     setAnioAcademicoCombo(anioAcademicolst.filter((data) => (data.id === e)));
     setAnio(e);
-    getAllMesDiaFiltrar(e, mes, cate).then( x => {
-      setPeriodo(x);       
-    });
+
+    if(mes == -5){
+
+      periodoData.forEach( per => {
+        getAllMesDiaFiltrar(e, per.numMes, cate).then( x => {
+          var lst = lstPeriodo;
+          lst.push(x);
+          setLstPeriodo(lst);
+        });
+      })
+    }else{
+      getAllMesDiaFiltrar(e, mes, cate).then( x => {
+        var lst = [];
+        lst.push(x);
+        setLstPeriodo(lst);
+      });
+    }
+
+    
 
   };
 
   const hanldeSelectCategoria = (e) => {
-      console.log(e);
+   
       setCategoria(e);
       cargarListado(e);         
-      setCate(e);      
-      getAllMesDiaFiltrar(anio, mes, e).then( x => {
-        
+      setCate(e);   
+      if(mes == -5){
+        periodoData.forEach( per => {
+          getAllMesDiaFiltrar(anio, per.numMes, e).then( x => {
+            var lst = lstPeriodo;
+            lst.push(x);
+            setLstPeriodo(lst);
+          });
+        });
+      }else{
+        getAllMesDiaFiltrar(anio, mes, e).then( x => {
+          var lst = [];
+          lst.push(x);
+          setLstPeriodo(lst);
+        });
+      }
       
-
-        setPeriodo(x);       
-      });
+      
+     
       
     // }
     // if(e == 2){
@@ -138,12 +181,19 @@ export const TableMesList = () => {
 
 const cargarListado = (cate) => {
   // getDoctorsByTeamTipo(1, cate).then( x => {
-  //   console.log(x);
   //   setTeam1(x) ;
   // });
 };
 
   useEffect(() => {
+
+
+    getTeams().then((resp) => {
+      resp.forEach((data) => {
+        teams.push(data.id);
+      });      
+    });
+  
 
     getAllAnioAcademico().then( x => {
       setAnioAcademicolst(x);      
@@ -178,6 +228,7 @@ const cargarListado = (cate) => {
             optionFilterProp="children"
             style={{ width: "300px",  marginRight: '10px' }}
             value={idAnio}
+            onClick={clear}
             onChange={handleSelectAnioAcademico}
             filterOption={(input, option) =>
               option.props.children
@@ -202,6 +253,7 @@ const cargarListado = (cate) => {
               style={{ width: "300px"}}
               value={categoriaId}
               onChange={hanldeSelectCategoria}
+              onClick={clear}
               filterOption={(input, option) =>
                 option.props.children
                   .toLowerCase()
@@ -209,7 +261,7 @@ const cargarListado = (cate) => {
               }
             >
                 {categoriaslst.map((data) => (
-                <Select.Option key={data.name} value={data.id}>
+                <Select.Option key={data.name} value={data.id} >
                 {data.name}
                 </Select.Option>
                 ))}
@@ -224,6 +276,7 @@ const cargarListado = (cate) => {
             optionFilterProp="children"
             style={{ width: "300px",  marginRight: '10px' }}
             value={numMes}
+            onClick={clear}
             onChange={handleSelectMes}
             filterOption={(input, option) =>
               option.props.children
@@ -247,17 +300,17 @@ const cargarListado = (cate) => {
       </Form>
       <div>
 
-        {periodo.map((data) => (
-          // console.log(data)
+        {/* {lstPeriodo.map((data) => (
           //  <p>{data.id}</p>
-            <TableMes
-              keyId={data.key}
-              mesName={data.nombreMes}
-              mesNum={data.idMes}
-              year={data.anio}
-            />
-        ))}
+            // <div>
+            //   <h1>  </h1>
+            // </div>
+        ))} */}
 
+        {lstPeriodo.map((data) => (
+            <TableMes dataTabla={data} listaGrupos={teams}>
+            </TableMes>
+        ))}
 
       </div>
     </div>

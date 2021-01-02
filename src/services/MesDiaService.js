@@ -20,4 +20,11 @@ const getAllMesDiaFiltrar = async (anio, mes, categoria) => {
 };
 
 
-export { getAllMesDia, getAllMesDiaFiltrar };
+
+const actualuzarMesDia = async (idmesdia, grupo) => {
+  const resp = await clienteAxios.put(`/mesdia/actualizar/${idmesdia}/${grupo}`);
+  return resp.data;
+};
+
+
+export { getAllMesDia, getAllMesDiaFiltrar, actualuzarMesDia };
