@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Button, Form, Select } from "antd";
 import { TableMes } from "./TableMes";
+import { findAllTipos } from "../../services/DoctorService";
+import { getAllAnioAcademico } from "../../services/AnioAcademicoService";
+import { getAllMesDiaFiltrar } from "../../services/MesDiaService";
+
+let aniosAcademicos = [];
 
 let periodoData = [
   {
@@ -68,19 +73,91 @@ let periodoData = [
 export const TableMesList = () => {
   const [numMes, setNumMes] = useState(null);
   const [periodo, setPeriodo] = useState([]);
+  
+  const [idAnio, setIdAnio] = useState(null);   
+
+
+  const [placeCategoria, setPlaceCategoria] = useState('Seleccione una Categoría');
+  const [idTeam, setIdTeam] = useState(null);
+  const [categoriaId, setCategoria] = useState(null);  
+  const [categoriaslst, setCategoriaslst] = useState([]);
+  
+  const [anioAcademicolst, setAnioAcademicolst] = useState([]);
+  const [anioAcademicoCombo, setAnioAcademicoCombo] = useState([]);
+
+  const [mes, setMes] = useState(-5);
+  const [anio, setAnio] = useState(-5);
+  const [cate, setCate] = useState(-5);  
+
   // const [filter, setFilter] = useState([]);
 
   const clearFilter = () => {
-    setNumMes(null);
-    setPeriodo(periodoData);
+    setNumMes(null);    
+    setMes(-5);
+    setPeriodo([]);
   };
   const handleSelectMes = (e) => {
     setNumMes(e);
     setPeriodo(periodoData.filter((data) => (data.numMes === e)));
+    setMes(e);
+    getAllMesDiaFiltrar(anio, e, cate).then( x => {
+      setPeriodo(x);      
+    });
+
   };
 
+  const handleSelectAnioAcademico = (e) => {
+    setIdAnio(e);
+    setAnioAcademicoCombo(anioAcademicolst.filter((data) => (data.id === e)));
+    setAnio(e);
+    getAllMesDiaFiltrar(e, mes, cate).then( x => {
+      setPeriodo(x);       
+    });
+
+  };
+
+  const hanldeSelectCategoria = (e) => {
+      console.log(e);
+      setCategoria(e);
+      cargarListado(e);         
+      setCate(e);      
+      getAllMesDiaFiltrar(anio, mes, e).then( x => {
+        
+      
+
+        setPeriodo(x);       
+      });
+      
+    // }
+    // if(e == 2){
+    //   setPlaceCategoria('Cirugía');
+    //   setCategoria(e);
+    //   cargarListado(e);
+    // }
+};
+
+const cargarListado = (cate) => {
+  // getDoctorsByTeamTipo(1, cate).then( x => {
+  //   console.log(x);
+  //   setTeam1(x) ;
+  // });
+};
+
   useEffect(() => {
-    setPeriodo(periodoData);
+
+    getAllAnioAcademico().then( x => {
+      setAnioAcademicolst(x);      
+    }); 
+
+    setPeriodo([]);
+
+    findAllTipos().then( x =>
+      {  
+        setCategoriaslst(x);
+      }
+    );
+
+
   }, []);
 
   return (
@@ -94,25 +171,58 @@ export const TableMesList = () => {
         }}
       >
         <Form.Item label="Año Académico">
-          <Select
-            name="anio"
+        <Select
+            showSearch
+            name="idAnio"
             placeholder="Seleccione un año"
             optionFilterProp="children"
-            style={{ width: "150px", marginRight: '10px' }}
-            value="R1"
+            style={{ width: "300px",  marginRight: '10px' }}
+            value={idAnio}
+            onChange={handleSelectAnioAcademico}
+            filterOption={(input, option) =>
+              option.props.children
+                .toLowerCase()
+                .indexOf(input.toLowerCase()) >= 0
+            }
           >
-              <Select.Option value="R1">
-                2019 - 2020
+            {anioAcademicolst.map((data) => (
+              <Select.Option key={data.id} value={data.id}>
+                {data.anioInicio + " - " + data.anioFinal} 
               </Select.Option>
+            ))}
           </Select>
         </Form.Item>
+
+        <Form.Item label="Categoría">
+            <Select
+              showSearch
+              name="cateogria"
+              placeholder= {placeCategoria}
+              optionFilterProp="children"
+              style={{ width: "300px"}}
+              value={categoriaId}
+              onChange={hanldeSelectCategoria}
+              filterOption={(input, option) =>
+                option.props.children
+                  .toLowerCase()
+                  .indexOf(input.toLowerCase()) >= 0
+              }
+            >
+                {categoriaslst.map((data) => (
+                <Select.Option key={data.name} value={data.id}>
+                {data.name}
+                </Select.Option>
+                ))}
+            </Select>
+          </Form.Item>
+
         <Form.Item label="Mes">
           <Select
             showSearch
             name="numMes"
             placeholder="Seleccione una mes"
             optionFilterProp="children"
-            style={{ width: "300px" }}
+            style={{ width: "300px",  marginRight: '10px' }}
             value={numMes}
             onChange={handleSelectMes}
             filterOption={(input, option) =>
@@ -128,6 +238,7 @@ export const TableMesList = () => {
             ))}
           </Select>
         </Form.Item>
+
         <Form.Item style={{ marginLeft: "10px" }}>
           <Button type="ghost" onClick={clearFilter}>
             Limpiar
@@ -135,14 +246,19 @@ export const TableMesList = () => {
         </Form.Item>
       </Form>
       <div>
+
         {periodo.map((data) => (
-          <TableMes
-            key={data.numMes}
-            mesName={data.nameMes}
-            mesNum={data.numMes}
-            year={data.year}
-          />
+          // console.log(data)
+          //  <p>{data.id}</p>
+            <TableMes
+              keyId={data.key}
+              mesName={data.nombreMes}
+              mesNum={data.idMes}
+              year={data.anio}
+            />
         ))}
+
+
       </div>
     </div>
   );
