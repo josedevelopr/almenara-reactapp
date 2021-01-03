@@ -45,6 +45,7 @@ export const Usuario = () => {
   const [editar, setEditar] = useState(false);
   const [filterTable, setFilterTable] = useState(null);  
   const [dataSource, setDataSource] = useState([]);
+  const [selectedRoles, setSelectedRoles] = useState([]);
 
   const [roles, setRoles] = useState([]);
 
@@ -80,18 +81,23 @@ export const Usuario = () => {
 
   function roleOptionsChecked(data){
     let response = [];
-    data.forEach( (role) => {
-      // console.log(role);
+    console.log(data);
+    data.forEach( (role) => {      
       response.push( role.id );
     });
     return response;
   };
 
   function onChangeRoles(checkedValues) {
+    console.log(checkedValues);
+    let chk = [];
     formik.values.roles = [];
     checkedValues.forEach(rol => {      
       formik.values.roles.push({id : rol});
+      chk.push(rol);
     });    
+
+    setSelectedRoles(chk);
   }
 
   const validationSchema = Yup.object().shape({
@@ -266,6 +272,10 @@ export const Usuario = () => {
     formik.values.status = doctor.status;
     formik.values.roles = doctor.roles;
     formik.values.action = "update";
+    let chkRoles = [];
+    doctor.roles.forEach(r => {chkRoles.push(r.id); console.log(r)});
+    console.log(chkRoles);
+    setSelectedRoles(chkRoles);
     setEditar(true);
   }
 
@@ -484,8 +494,10 @@ export const Usuario = () => {
               ) : null}
             </Form.Item>
             <Form.Item label="Roles:" required>
-              {/* checkhere */}
-              <Checkbox.Group options={roleOptions(roles)} defaultValue={roleOptionsChecked(formik.values.roles)} onChange={onChangeRoles} />
+              <Checkbox.Group options={roleOptions(roles)}               
+              value={selectedRoles}
+              //defaultValue={selectedRoles} 
+              onChange={onChangeRoles} />
               {formik.errors.roles && formik.touched.roles ? (
                 <div className="error-field">{formik.errors.roles}</div>
               ) : null}
