@@ -5,7 +5,7 @@ import { TableMes } from "./TableMes";
 import { findAllTipos } from "../../services/DoctorService";
 import { getAllAnioAcademico } from "../../services/AnioAcademicoService";
 import { getAllMesDiaFiltrar, viewPdfServicioMesDia } from "../../services/MesDiaService";
-import { getTeams } from "../../services/TeamService";
+import { getTeams, obtenerGruposPorTipo } from "../../services/TeamService";
 
 let aniosAcademicos = [];
 let teams = [];
@@ -167,7 +167,15 @@ export const TableMesList = () => {
 
 
   const hanldeSelectCategoria = (e) => {
-   
+    
+      teams = [];
+  
+      obtenerGruposPorTipo(e).then((resp) => {
+        resp.forEach((data) => {
+          teams.push(data.id);
+        });
+      });
+
       setCategoria(e);
       cargarListado(e);         
       setCate(e);   
@@ -206,16 +214,15 @@ export const TableMesList = () => {
 };
 
 const cargarListado = (cate) => {
+
+
+
 };
 
   useEffect(() => {
 
 
-    getTeams().then((resp) => {
-      resp.forEach((data) => {
-        teams.push(data.id);
-      });      
-    });
+  
   
 
     getAllAnioAcademico().then( x => {
@@ -229,6 +236,12 @@ const cargarListado = (cate) => {
         setCategoriaslst(x);
       }
     );
+
+    obtenerGruposPorTipo(1).then((resp) => {
+      resp.forEach((data) => {
+        teams.push(data.id);
+      });      
+    });
 
 
   }, []);

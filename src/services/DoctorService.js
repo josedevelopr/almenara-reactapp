@@ -68,10 +68,11 @@ const findAllTipos = async () => {
   return resp.data;
 };
 
+
 const upgradeDoctorLevel = async () => {
   const resp = await clienteAxios.put(`/doctors/upgradeDoctorLevel`);
   return resp.data;
 };
 
-export { getDoctors, createDoctor, viewPdfDoctor, getDoctorsByTeam, getDoctorsByTeamTipo, getTeamIdCategoriaTodos, 
+export { getDoctors, createDoctor, viewPdfDoctor, getDoctorsByTeam, getDoctorsByTeamTipo, getTeamIdCategoriaTodos,  
   getFindAllByTeamIdGrupo,findAllTipos, createDoctorGrupo, borrarDoctorGrupo, updateDoctor, upgradeDoctorLevel, saveImportedDoctor };

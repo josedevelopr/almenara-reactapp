@@ -5,6 +5,14 @@ const getTeams = async () => {
   return resp.data;
 };
 
+
+const obtenerGruposPorTipo = async (categoria) => {
+  const resp = await clienteAxios.get(`/teams/obtenerGruposPorTipo/${categoria}`);
+  return resp.data;
+};
+
+
+
 const createTeams = async (data) => {
   const resp = await clienteAxios.post('/teams',data);
   return resp.data;
@@ -28,4 +36,4 @@ const registrar = async ( name, tipo) => {
 };
 
 
-export { getTeams, createTeams, actualizarTeams, guardar, registrar };
+export { getTeams, createTeams, actualizarTeams, guardar, registrar, obtenerGruposPorTipo };
