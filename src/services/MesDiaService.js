@@ -7,8 +7,7 @@ const getAllMesDia = async () => {
 
 
 const getAllMesDiaFiltrar = async (anio, mes, categoria) => {
-  const resp = await clienteAxios.get(`/mesdia/filtrar/${anio}/${mes}/${categoria}`);
-  console.log(resp.data);
+  const resp = await clienteAxios.get(`/mesdia/filtrar/${anio}/${mes}/${categoria}`);  
 
   var i = 1;
   resp.data.forEach(element => {
@@ -27,4 +26,16 @@ const actualuzarMesDia = async (idmesdia, grupo) => {
 };
 
 
-export { getAllMesDia, getAllMesDiaFiltrar, actualuzarMesDia };
+const viewPdfServicioMesDia = async ( listadoMeses ) => {
+  await clienteAxios
+    .put("/mesdia/pdf", listadoMeses , { responseType: "blob" })
+    .then((resp) => {
+      const file = new Blob([resp.data], { type: "application/pdf" });
+      const fileURL = URL.createObjectURL(file);
+      window.open(fileURL);
+    });
+};
+
+
+
+export { getAllMesDia, getAllMesDiaFiltrar, actualuzarMesDia, viewPdfServicioMesDia };

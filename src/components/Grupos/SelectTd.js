@@ -31,6 +31,7 @@ const openErrorNotification = (msg, description, placement) => {
 };
 
   const handleSelect = (e) => {
+    var aux = teamId;
     console.log(dia.idReg);
     console.log(e.target.value);
     setTeamId(e.target.value);
@@ -38,12 +39,17 @@ const openErrorNotification = (msg, description, placement) => {
     
 
     actualuzarMesDia(dia.idReg, e.target.value).then((resp) => {
-      console.log(resp);            
-      openNotification("Guardado Correctamente", "", "topRight");      
+      console.log(resp);
+      if(resp.nombreDia.length > 5){
+        setTeamId(aux);
+        openErrorNotification(resp.nombreDia, "", "topRight");            
+      }else{        
+        openNotification("Guardado Correctamente", "", "topRight");      
+      }      
     }).catch(function (error) {
       if (error.response) 
       {
-        openErrorNotification(error.response.data.message, "", "topRight");            
+        
       }
     });   
 
