@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { FilePdfTwoTone, EditOutlined } from "@ant-design/icons";
 import { Button, Form, Select } from "antd";
 import { TableMes } from "./TableMes";
 import { findAllTipos } from "../../services/DoctorService";
 import { getAllAnioAcademico } from "../../services/AnioAcademicoService";
-import { getAllMesDiaFiltrar } from "../../services/MesDiaService";
+import { getAllMesDiaFiltrar, viewPdfServicioMesDia } from "../../services/MesDiaService";
 import { getTeams } from "../../services/TeamService";
 
 let aniosAcademicos = [];
@@ -106,6 +107,9 @@ export const TableMesList = () => {
     // setLstPeriodo(lstMain);    
   }
   
+  const exportarPeriodo = () => { 
+    viewPdfServicioMesDia(lstPeriodo);    
+  };  
 
   const handleSelectMes = (e) => {
 
@@ -137,8 +141,8 @@ export const TableMesList = () => {
             itemsProcessed++;
             if(itemsProcessed === periodoData.length) {
               lst.sort(function(a, b) {
-                var keyA = a.mesnum  + a.anio,
-                  keyB = b.mesnum  + b.anio;
+                var keyA = a.anio,
+                  keyB = b.anio;
                 if (keyA < keyB) return -1;
                 if (keyA > keyB) return 1;
                 return 0;
@@ -312,9 +316,17 @@ const cargarListado = (cate) => {
         </Form.Item>
 
         <Form.Item style={{ marginLeft: "10px" }}>
-          <Button type="ghost" onClick={clearFilter}>
-            Limpiar
-          </Button>
+
+        <Button
+          type="dashed"
+          color="red"
+          size="large"
+          danger
+          onClick={exportarPeriodo}
+        >
+          <FilePdfTwoTone twoToneColor="red" /> Exportar a PDF
+        </Button>
+
         </Form.Item>
       </Form>
       <div>      

@@ -26,4 +26,16 @@ const actualuzarMesDia = async (idmesdia, grupo) => {
 };
 
 
-export { getAllMesDia, getAllMesDiaFiltrar, actualuzarMesDia };
+const viewPdfServicioMesDia = async ( listadoMeses ) => {
+  await clienteAxios
+    .put("/mesdia/pdf", listadoMeses , { responseType: "blob" })
+    .then((resp) => {
+      const file = new Blob([resp.data], { type: "application/pdf" });
+      const fileURL = URL.createObjectURL(file);
+      window.open(fileURL);
+    });
+};
+
+
+
+export { getAllMesDia, getAllMesDiaFiltrar, actualuzarMesDia, viewPdfServicioMesDia };
