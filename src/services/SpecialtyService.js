@@ -10,4 +10,19 @@ const getSpecialtiesDto = async () => {
   return resp.data;
 };
 
-export { getSpecialties, getSpecialtiesDto };
+
+const createEspecialidad = async (newService) => {
+  const resp = await clienteAxios.post("/specialties/create", newService);
+  return resp.data;
+};
+
+const actualizarEspecialidad = async (newService) => {
+  const resp = await clienteAxios.post("/specialties/create", newService);
+  return resp.data;
+};
+
+
+export { getSpecialties, getSpecialtiesDto, 
+  createEspecialidad,
+  actualizarEspecialidad
+  };
