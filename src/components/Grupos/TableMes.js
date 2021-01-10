@@ -18,6 +18,7 @@ let diasSemana = [
 
 
 export const TableMes = ({ dataTabla, listaGrupos}) => {
+  console.log(listaGrupos);
   let days = [];
   let daysName = []; 
   let agrupado = [];

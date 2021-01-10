@@ -5,4 +5,9 @@ const getSpecialties = async () => {
   return resp.data;
 };
 
-export { getSpecialties };
+const getSpecialtiesDto = async () => {
+  const resp = await clienteAxios.get("/specialties/simple");
+  return resp.data;
+};
+
+export { getSpecialties, getSpecialtiesDto };
