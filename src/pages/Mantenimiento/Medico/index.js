@@ -369,7 +369,6 @@ export const Medico = () => {
       width: 100,
       align: "center",
       render: (record) => (
-        //checkhere
         <Button type="link" size="small" onClick={() => {showUpdateForm(record);}}>
           <EditOutlined />
         </Button>

@@ -72,6 +72,11 @@ export const Sidebar = () => {
               </NavLink>
             </li>
             <li>
+              <NavLink to="/mantenimiento/especialidad-servicio" activeClassName="active">
+                • Asignar Servicios a Especialidad
+              </NavLink>
+            </li>
+            <li>
               <NavLink to="/mantenimiento/grupomant" activeClassName="active">
                 • Grupos
               </NavLink>
