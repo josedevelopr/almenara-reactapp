@@ -15,7 +15,7 @@ export const Sidebar = () => {
     { 
       return (
         <React.Fragment>
-          <ul >
+          <ul>
             <li>
               <NavLink to="/inicio" activeClassName="active">
                 • Inicio
@@ -96,11 +96,11 @@ export const Sidebar = () => {
     
   }  
   return (        
-    <div className="left">
+    <div className="left" style={{overflowY:"scroll"}}>
       <div className="logo">
         <img src={LogoHospital} alt="Logo Harrison" />
         <h2>Hospital Almenara</h2>
-      </div>            
+      </div>       
       {adminMenu()}
       <ul>
         <li>

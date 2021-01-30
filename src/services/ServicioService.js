@@ -5,6 +5,11 @@ const getServicios = async () => {
   return resp.data;
 };
 
+const getServiciosWithSpecialityName = async () => {
+  const resp = await clienteAxios.get("/servicios/serviceWithSpecialityName");
+  return resp.data;
+};
+
 const createServicio = async (newService) => {
   const resp = await clienteAxios.post("/servicios", newService);
   return resp.data;
@@ -42,5 +47,6 @@ export {
     getServicesBySpeciality,
     getActiveServices,
     addServiceToSpeciality,
-    removeServiceToSpeciality
+    removeServiceToSpeciality,
+    getServiciosWithSpecialityName
   };

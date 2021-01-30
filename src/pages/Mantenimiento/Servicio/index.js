@@ -39,13 +39,17 @@ export const Servicio = () => {
       });
       console.log(resp);
       setDataSource(resp);
+      if(filterTable != null)
+      {
+        setFilterTable(resp);
+      }
     });
   };
 
   const validationSchema = Yup.object().shape({
     name: Yup.string()
       .trim()
-      .matches(/^[ñÑa-zA-Z ]*$/, "Solo se admiten letras.")
+      //.matches(/^[ñÑa-zA-ZáéíóúÁÉÍÓÚ ]*$/, "Solo se admiten letras.")
       .required("Nombre requerido."),
     state: Yup.boolean()
       .required("Debe seleccionar un estado para el servicio."),

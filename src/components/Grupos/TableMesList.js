@@ -117,10 +117,17 @@ export const TableMesList = () => {
     setPeriodo(periodoData.filter((data) => (data.numMes === e)));
     setMes(e);
     var lst = [];
-    getAllMesDiaFiltrar(anio, e, cate).then( x => {            
-      lst.push(x[0]);
-      setLstPeriodo(lst);
-    });
+    
+    if(anio != -5 && anio != null  && e != null && cate != -5 && cate != null)
+    {
+      getAllMesDiaFiltrar(anio, e, cate).then( x => 
+        {            
+        console.log(x);
+          lst.push(x[0]);
+        setLstPeriodo(lst);
+      }).catch(err => setLstPeriodo([]));
+    }    
+    setLstPeriodo(lst);
   };
 
   const handleSelectAnioAcademico = (e) => {
@@ -130,7 +137,7 @@ export const TableMesList = () => {
     setAnio(e);
 
 
-    if(cate != -5){
+    if(cate != -5 && anio != -5 ){
 
       if(mes == -5){
         var lst = [];
@@ -152,15 +159,18 @@ export const TableMesList = () => {
               setLstPeriodo(lst);
             }
         
-          });
+          }).catch(err => setLstPeriodo([]));
         })
       }else{
-        getAllMesDiaFiltrar(e, mes, cate).then( x => {
-          lst = [];
-          lst.push(x[0]);
-            setLstPeriodo(lst);   
-          
-        });
+        if(cate != -5 && anio != -5 && anio != null && e != null && cate != null)
+        {
+          getAllMesDiaFiltrar(e, mes, cate).then( x => {
+            lst = [];
+            lst.push(x[0]);
+              setLstPeriodo(lst);   
+            
+          }).catch(err => setLstPeriodo([]));     ;
+        }
       }
     };
     }
@@ -169,48 +179,50 @@ export const TableMesList = () => {
   const hanldeSelectCategoria = (e) => {
     
       teams = [];
-  
-      obtenerGruposPorTipo(e).then((resp) => {
-        resp.forEach((data) => {
-          teams.push(data.id);
-        });
-      });
-
       setCategoria(e);
       cargarListado(e);         
-      setCate(e);   
-      if(mes == -5){
-        var lst = [];
-        var itemsProcessed = 0;
-        periodoData.forEach( per => {
-          getAllMesDiaFiltrar(anio, per.numMes, e).then( x => {
-            lst.push(x[0]);
-            itemsProcessed++;
-            if(itemsProcessed === periodoData.length) {
-      
-
-              lst.sort(function(a, b) {
-                var keyA = a.anio,
-                  keyB = b.anio;
-                if (keyA < keyB) return -1;
-                if (keyA > keyB) return 1;
-                return 0;
-              });
-
-              setLstPeriodo(lst);
-            }
+      setCate(e);  
+      if(anio != null && e != null && mes != null && cate != -5 && anio != -5 && mes != -5)
+      {
+        obtenerGruposPorTipo(e).then((resp) => {
+          resp.forEach((data) => {
+            teams.push(data.id);
           });
-          
-        });        
-
-      }else{
-        getAllMesDiaFiltrar(anio, mes, e).then( x => {
-          lst = [];
-          lst.push(x[0]);
-            setLstPeriodo(lst);
         });
+
+         
+        if(mes == -5){
+          var lst = [];
+          var itemsProcessed = 0;
+          periodoData.forEach( per => {
+            getAllMesDiaFiltrar(anio, per.numMes, e).then( x => {
+              lst.push(x[0]);
+              itemsProcessed++;
+              if(itemsProcessed === periodoData.length) {
+        
+
+                lst.sort(function(a, b) {
+                  var keyA = a.anio,
+                    keyB = b.anio;
+                  if (keyA < keyB) return -1;
+                  if (keyA > keyB) return 1;
+                  return 0;
+                });
+
+                setLstPeriodo(lst);
+              }
+            }).catch(err => setLstPeriodo([]));     ;
+            
+          });        
+
+        }else{          
+            getAllMesDiaFiltrar(anio, mes, e).then( x => {
+              lst = [];
+              lst.push(x[0]);
+              setLstPeriodo(lst);
+            }).catch(err => setLstPeriodo([]));      
+        }
       }
-    
 };
 
 const cargarListado = (cate) => {

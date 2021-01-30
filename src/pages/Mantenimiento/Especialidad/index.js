@@ -48,7 +48,7 @@ export const Especialidad = () => {
   const validationSchema = Yup.object().shape({
     name: Yup.string()
       .trim()
-      .matches(/^[ñÑa-zA-ZáéíóúÁÉÍÓÚ ]*$/, "Solo se admiten letras.")
+      //.matches(/^[ñÑa-zA-ZáéíóúÁÉÍÓÚ ]*$/, "Solo se admiten letras.")
       .required("Nombre requerido."),
     state: Yup.boolean()
       .required("Debe seleccionar un estado para la especialidad."),

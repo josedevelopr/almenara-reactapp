@@ -11,7 +11,7 @@ export const AsignaGrupo = () => {
         <h2 className="title">
           <Breadcrumb>
             <Breadcrumb.Item>Proceso</Breadcrumb.Item>
-            <Breadcrumb.Item>Asignar Grupo</Breadcrumb.Item>
+            <Breadcrumb.Item>Asignar Grupo de guardia en emergencia</Breadcrumb.Item>
           </Breadcrumb>
         </h2>
       </header>

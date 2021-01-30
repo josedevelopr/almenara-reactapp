@@ -34,7 +34,7 @@ export const AsignarServicio = () => {
     formik.values.mes = {id : monthID, nombre : monthName}    
     formik.values.servicio = {id : data3.servicio != null ? data3.servicio.id : null, nombre : data3.servicio != null ?data3.servicio.nombre : ""}    
     setSelectedMonth(monthName);
-    setServiceSpecialities( serviceSpecialities.length > 0 ? data.doctor.specialty.servicios : []);
+    setServiceSpecialities( serviceSpecialities.length > 0 ? data.doctor.specialty.servicios.filter(servicio => servicio.state == true) : []);
 
   };
 

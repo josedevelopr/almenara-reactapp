@@ -6,7 +6,7 @@ import {
   viewPdfServiciosDoctorByAnioAndServicio,
   viewPdfServiciosDoctorFilterSpecialty,
 } from "../../../../services/ServicioDoctorService";
-import {getServicios} from "../../../../services/ServicioService";
+import {getServiciosWithSpecialityName} from "../../../../services/ServicioService";
 import {getAniosAcademicos} from "../../../../services/AnioAcademicoService";
 import {getMeses} from "../../../../services/MesService";
 import { Form, Breadcrumb, Button, Select, Empty } from "antd";
@@ -75,9 +75,9 @@ export const ReporteRotationDoctorServiciosPorPeriodo = () => {
 
   useEffect(() => {
     // listar();
-    getServicios().then(data => {
+    getServiciosWithSpecialityName().then(data => {
         setServicios(data);
-        // console.log(data);
+        console.log(data);
     });
 
     getMeses().then(data => {
@@ -118,7 +118,7 @@ export const ReporteRotationDoctorServiciosPorPeriodo = () => {
               name="service"
               placeholder="Seleccione una Servicio"
               optionFilterProp="children"       
-              style={{ width: "200px" }}       
+              style={{ width: "470px" }}       
               value={idService}
               onChange={hanldeSelectService}
               filterOption={(input, option) =>
@@ -196,7 +196,7 @@ export const ReporteRotationDoctorServiciosPorPeriodo = () => {
                 </tr>
               </thead>
               <tbody>
-                {serviciosDoctor.map((data) => (
+                {serviciosDoctor.map((data, key1) => (
                   <React.Fragment key={data.id}>
                     <tr>
                       <td style={{ width: "300px" }}>
@@ -204,7 +204,7 @@ export const ReporteRotationDoctorServiciosPorPeriodo = () => {
                         {data.doctor.schoolAgreement.school.shortName}
                       </td>
                       <td>{data.doctor.specialty.name}</td>
-                      {data.anioAcademicoDelegados.map((data2) => (        
+                      {data.anioAcademicoDelegados.map((data2, key2) => (        
                                 <React.Fragment key={data2.id}>
                                     <td>
                                         {data2.anioAcademico.codigo}
@@ -214,13 +214,14 @@ export const ReporteRotationDoctorServiciosPorPeriodo = () => {
                                         {data2.anioAcademico.anioFinal}
                                     </td>
                                     
-                                    {data2.servicioDelegados.map((data3) => (
+                                    {data2.servicioDelegados.map((data3, key3) => (
                                         <td
-                                            key={String(data.id)
-                                            .concat(String(data2.id))
-                                            .concat(String(data3.id))}                                                
+                                            key={String(data != null && data.id != null ? key1 : data.id)
+                                            .concat(String(data2 != null && data2.id != null ? key2 : data2.id))
+                                            .concat(String(data3 != null && data3.id != null ? key3 : data3.id))}                                                
                                         >
-                                            {data3.servicio.id == idService ? 1 : ""}
+                                            {data3.servicio != null ? data3.servicio.id == idService && data3.servicio != null ?  1 :  null : null}
+                                            {/* {data3.servicio.id == idService && data3.servicio != null ?  1 : ""} */}
                                         </td>
                                     ))}
                                 </React.Fragment>   
